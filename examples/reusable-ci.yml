@@ -1,0 +1,48 @@
+name: Reusable Node CI
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: Node.js version to test
+        required: false
+        type: string
+        default: "22"
+      working-directory:
+        description: Package directory
+        required: false
+        type: string
+        default: "."
+    outputs:
+      artifact-name:
+        description: Name of the test report artifact
+        value: ${{ jobs.test.outputs.artifact-name }}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      artifact-name: ${{ steps.meta.outputs.name }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+          cache: npm
+          cache-dependency-path: ${{ inputs.working-directory }}/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - id: meta
+        run: echo "name=reports-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reports-${{ github.sha }}
+          path: ${{ inputs.working-directory }}/test-results/
+          if-no-files-found: ignore

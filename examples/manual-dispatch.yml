@@ -1,0 +1,29 @@
+name: Manual operation
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options: [staging, production]
+      dry-run:
+        description: Preview without changing external state
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  operate:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate input
+        run: |
+          case "${{ inputs.environment }}" in staging|production) ;; *) exit 1 ;; esac
+      - run: ./scripts/operate.sh "${{ inputs.environment }}" "${{ inputs.dry-run }}"

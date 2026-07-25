@@ -1,0 +1,18 @@
+flowchart LR
+    classDef trigger fill:#fff7ed,stroke:#ea580c,color:#7c2d12,stroke-width:2px
+    classDef workflow fill:#eff6ff,stroke:#2563eb,color:#172554,stroke-width:2px
+    classDef runner fill:#ecfdf5,stroke:#059669,color:#064e3b,stroke-width:2px
+    classDef output fill:#f5f3ff,stroke:#7c3aed,color:#3b0764,stroke-width:2px
+    classDef control fill:#fef2f2,stroke:#dc2626,color:#7f1d1d,stroke-width:2px
+
+    E["Event<br/>push · PR · schedule · manual"]:::trigger
+    W["Workflow YAML<br/>.github/workflows/"]:::workflow
+    F{"Filters and<br/>permissions"}:::control
+    J["Jobs<br/>needs · matrix · concurrency"]:::workflow
+    R["Runner<br/>hosted or self-hosted"]:::runner
+    S["Steps<br/>run commands or actions"]:::runner
+    O["Outputs<br/>logs · artifacts · cache"]:::output
+    D["Environment<br/>approval and deploy"]:::control
+
+    E --> W --> F --> J --> R --> S --> O
+    S --> D --> O

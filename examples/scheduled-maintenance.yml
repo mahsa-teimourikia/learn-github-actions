@@ -1,0 +1,26 @@
+name: Scheduled maintenance
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run idempotent maintenance
+        run: ./scripts/maintenance.sh
+      - name: Open an issue on failure
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh issue create --title "Scheduled maintenance failed"
+          --body "Run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

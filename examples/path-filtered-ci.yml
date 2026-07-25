@@ -1,0 +1,28 @@
+name: Service CI
+
+on:
+  pull_request:
+    paths:
+      - "services/payments/**"
+      - "packages/shared/**"
+      - ".github/workflows/path-filtered-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  payments:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: services/payments
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: services/payments/package-lock.json
+      - run: npm ci
+      - run: npm test

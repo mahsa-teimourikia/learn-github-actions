@@ -1,0 +1,23 @@
+name: OIDC cloud deployment
+
+on:
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      # Replace with the official login action for your cloud provider.
+      # Configure its trust policy for this repository and production environment.
+      - name: Exchange GitHub OIDC identity
+        run: echo "Authenticate with the provider's official OIDC action here"
+      - run: ./scripts/deploy.sh production

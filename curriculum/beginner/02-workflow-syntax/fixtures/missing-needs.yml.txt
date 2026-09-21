@@ -1,0 +1,17 @@
+name: Broken output dependency
+on: workflow_dispatch
+permissions: {}
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - id: plan
+        run: echo 'matrix={"component":["api"]}' >> "$GITHUB_OUTPUT"
+  validate:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    steps:
+      - run: echo "${{ matrix.component }}"

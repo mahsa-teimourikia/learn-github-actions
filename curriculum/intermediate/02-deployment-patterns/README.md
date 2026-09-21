@@ -50,7 +50,7 @@ Use UTC and document the expected time, make operations idempotent, use a low-pr
 
 ## Manual dispatch
 
-Prefer typed inputs such as `choice`, `boolean`, and `environment`; make dangerous actions opt-in; validate inputs again inside the job; protect production with an environment; and record actor, input, and artifact. See [`manual-dispatch.yml`](../../beginner/02-workflow-syntax/manual-dispatch.yml).
+Prefer typed inputs such as `choice`, `boolean`, and `environment`; make dangerous actions opt-in; validate inputs again inside the job; protect production with an environment; and record actor, input, and artifact. See the Workflow Syntax [release-orchestration solution](../../beginner/02-workflow-syntax/solutions/01-release-orchestration.yml).
 
 ## GitHub Pages deployment
 

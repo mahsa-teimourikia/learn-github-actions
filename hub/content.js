@@ -10,10 +10,10 @@ export const lessons = [
   },
   {
     id: "b2-syntax", level: "beginner", step: "02", title: "Workflow syntax",
-    summary: "Author triggers, permissions, jobs, expressions, outputs, matrices, and concurrency with safe shell boundaries.",
-    outcomes: ["Set restrictive default permissions", "Connect dependent jobs explicitly", "Keep untrusted event data out of shell syntax"],
-    readme: "curriculum/beginner/02-workflow-syntax/README.md", labGuide: "curriculum/beginner/02-workflow-syntax/README.md", starter: "curriculum/beginner/02-workflow-syntax/manual-dispatch.yml", solution: "curriculum/beginner/02-workflow-syntax/manual-dispatch.yml",
-    checkpoint: { question: "Where should an untrusted issue title be placed before a shell step reads it?", options: ["Directly inside run", "An environment variable read with quoting", "The workflow name"], answer: 1, explanation: "Pass the expression as environment data and quote the shell expansion so content is not parsed as shell syntax." }
+    summary: "Compile typed release inputs into a bounded job graph with safe expressions, explicit outputs, a dynamic matrix, containers, failure evidence, and concurrency.",
+    outcomes: ["Predict context and expression evaluation at each workflow key", "Transfer validated JSON through step and job outputs into a bounded matrix", "Run and diagnose conditions, services, containers, tolerated failures, and queued work"],
+    readme: "curriculum/beginner/02-workflow-syntax/README.md", labGuide: "curriculum/beginner/02-workflow-syntax/exercises/README.md", starter: "curriculum/beginner/02-workflow-syntax/exercises/01-release-orchestration-starter.yml", solution: "curriculum/beginner/02-workflow-syntax/solutions/01-release-orchestration.yml",
+    checkpoint: { question: "The plan job emits a validated JSON matrix. What must the consumer job declare and use?", options: ["A shared workspace and JSON.parse", "needs: plan and fromJSON(needs.plan.outputs.matrix)", "Only always() so the output becomes globally visible"], answer: 1, explanation: "The explicit needs edge makes the producer output available to the consumer; fromJSON converts the output string into a structured matrix value." }
   },
   {
     id: "i1-design", level: "intermediate", step: "01", title: "Workflow design",

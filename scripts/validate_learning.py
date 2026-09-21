@@ -49,6 +49,12 @@ def validate_workflows() -> None:
     assert (foundations / "exercises/01-foundations-starter.yml").exists()
     assert (foundations / "solutions/01-hardened-ci.yml").exists()
 
+    syntax = ROOT / "curriculum/beginner/02-workflow-syntax"
+    assert (syntax / "exercises/README.md").exists()
+    assert (syntax / "exercises/01-release-orchestration-starter.yml").exists()
+    assert (syntax / "solutions/01-release-orchestration.yml").exists()
+    assert (syntax / "release-fixture/package-lock.json").exists()
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()

@@ -1,0 +1,223 @@
+name: Northstar release orchestration
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch'
+      && format('{0} release by @{1}', inputs.environment, github.actor)
+      || format('PR validation for {0}', github.ref_name) }}
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "curriculum/beginner/02-workflow-syntax/**"
+      - ".github/workflows/lab-workflow-syntax.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options: [staging, production]
+        default: staging
+      dry_run:
+        description: Simulate without an external write
+        required: true
+        type: boolean
+        default: true
+      components_json:
+        description: JSON array containing api, worker, or web
+        required: true
+        type: string
+        default: '["api","worker"]'
+      fail_component:
+        description: Component to fail intentionally
+        required: false
+        type: choice
+        options: [none, api, worker, web]
+        default: none
+      use_job_container:
+        description: Run the fixture tests inside a Node job container
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: syntax-lab-${{ inputs.environment || github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  plan:
+    name: Create release plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.release_plan.outputs.matrix }}
+      plan_id: ${{ steps.release_plan.outputs.plan_id }}
+      should_release: ${{ steps.release_plan.outputs.should_release }}
+      target_environment: ${{ steps.release_plan.outputs.target_environment }}
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+    steps:
+      - name: Check out the selected revision
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install the fixture from its lockfile
+        run: npm ci --ignore-scripts
+
+      - name: Test input and matrix rules
+        run: npm test
+
+      - name: Build a plan safely from event inputs
+        id: release_plan
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment || 'staging' }}
+          DRY_RUN: ${{ github.event_name != 'workflow_dispatch' || inputs.dry_run }}
+          COMPONENTS_JSON: ${{ inputs.components_json || '["api","worker"]' }}
+        run: npm run plan
+
+  validate:
+    name: Validate ${{ matrix.component }} on Node.js ${{ matrix.node }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    continue-on-error: ${{ matrix.experimental || false }}
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - name: Validate component contract
+        env:
+          COMPONENT: ${{ matrix.component }}
+          NODE_VERSION: ${{ matrix.node }}
+          EXPERIMENTAL: ${{ matrix.experimental || false }}
+          FAIL_COMPONENT: ${{ inputs.fail_component || 'none' }}
+        run: npm run validate:component
+
+  integration:
+    name: Verify Redis service syntax
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    services:
+      redis:
+        image: redis:7.4-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 5
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - name: Connect through the published service port
+        env:
+          REDIS_HOST: 127.0.0.1
+          REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
+        run: npm run check:service
+
+  container_check:
+    name: Optional Node job container
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.use_job_container }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    container:
+      image: node:24-bookworm-slim
+      options: --cpus 1
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - run: npm ci --ignore-scripts
+      - run: npm test
+
+  simulate_release:
+    name: Simulate ${{ needs.plan.outputs.target_environment }} release
+    if: >-
+      ${{ github.event_name == 'workflow_dispatch'
+          && needs.plan.outputs.should_release == 'true' }}
+    needs: [plan, validate, integration]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Record the bounded simulation
+        env:
+          PLAN_ID: ${{ needs.plan.outputs.plan_id }}
+          TARGET_ENVIRONMENT: ${{ needs.plan.outputs.target_environment }}
+        run: |
+          printf 'simulated plan=%s environment=%s\n' "$PLAN_ID" "$TARGET_ENVIRONMENT"
+          {
+            echo "## Release simulation"
+            echo "- Plan: \`$PLAN_ID\`"
+            echo "- Environment: \`$TARGET_ENVIRONMENT\`"
+            echo "- External writes: none"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  report:
+    name: Explain the evaluated graph
+    if: ${{ always() && !cancelled() }}
+    needs: [plan, validate, integration, container_check, simulate_release]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Write conclusions without exposing contexts or secrets
+        env:
+          PLAN_RESULT: ${{ needs.plan.result }}
+          VALIDATE_RESULT: ${{ needs.validate.result }}
+          INTEGRATION_RESULT: ${{ needs.integration.result }}
+          CONTAINER_RESULT: ${{ needs.container_check.result }}
+          RELEASE_RESULT: ${{ needs.simulate_release.result }}
+        run: |
+          {
+            echo "## Job conclusions"
+            echo "| Job | Result |"
+            echo "| --- | --- |"
+            printf '| plan | %s |\n' "$PLAN_RESULT"
+            printf '| validate | %s |\n' "$VALIDATE_RESULT"
+            printf '| integration | %s |\n' "$INTEGRATION_RESULT"
+            printf '| container_check | %s |\n' "$CONTAINER_RESULT"
+            printf '| simulate_release | %s |\n' "$RELEASE_RESULT"
+          } >> "$GITHUB_STEP_SUMMARY"

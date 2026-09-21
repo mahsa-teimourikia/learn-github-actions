@@ -1,0 +1,13 @@
+name: Broken string boolean comparison
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        type: boolean
+        default: true
+jobs:
+  operate:
+    if: ${{ github.event.inputs.dry_run == false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This comparison mixes an event-payload string with a boolean"

@@ -1,11 +1,15 @@
-name: Deploy Actions learning quiz
+name: Deploy learning hub
 
 on:
   push:
     branches: [main]
     paths:
+      - "hub/**"
       - "quiz/**"
-      - ".github/workflows/deploy-quiz.yml"
+      - "curriculum/**"
+      - "assets/**"
+      - "scripts/build-pages.mjs"
+      - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -18,29 +22,22 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  test:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: quiz
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - run: npm test
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Validate and build static site
+        run: npm test
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:
-          path: quiz
+          path: site
       - id: deployment
         uses: actions/deploy-pages@v4

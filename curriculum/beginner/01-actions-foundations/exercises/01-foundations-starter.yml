@@ -1,0 +1,45 @@
+name: Northstar foundations lab starter
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "curriculum/beginner/01-actions-foundations/sample-app/**"
+      - ".github/workflows/lab-actions-foundations.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Test and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: curriculum/beginner/01-actions-foundations/sample-app
+    steps:
+      # Exercise 1: prevent checkout from retaining credentials.
+      - name: Check out the event revision
+        uses: actions/checkout@v7
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install exactly from the lockfile
+        run: npm ci
+
+      - name: Run the policy test suite
+        run: npm run test:ci
+
+      - name: Build the release candidate
+        run: npm run build
+
+      # Exercise 2: upload diagnostics and the release candidate with distinct
+      # identities, explicit retention, and strict missing-file behavior.
+
+  # Exercise 3: add a fresh-runner job that downloads the release candidate
+  # and verifies the digest in manifest.json without checking out the source.

@@ -1,5 +1,15 @@
 # Workflow syntax, explained
 
+## Lesson outcomes
+
+By the end of this lesson, you can author a valid workflow trigger, set least-privilege permissions, connect dependent jobs, use expressions safely, and explain matrix and concurrency controls.
+
+**Prerequisite:** [Actions foundations](../01-actions-foundations/README.md).
+
+**Scenario:** an operator needs a manually triggered deployment request with typed inputs and a safe default. Use [`manual-dispatch.yml`](manual-dispatch.yml) as the workflow lab: copy it into `.github/workflows/` on a practice branch, run it with several input combinations, and inspect the evaluated contexts and job conditions.
+
+**Success criteria:** distinguish configuration, secrets, outputs, and artifacts; avoid direct shell interpolation of untrusted event data; and justify every elevated permission. The lesson does not configure a real production environment.
+
 This is a practical tour of the YAML fields used most often in GitHub Actions. For exact grammar, use the [workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
 
 ## Minimal valid workflow

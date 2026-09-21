@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A structured learning path for designing, securing, and operating GitHub Actions workflows.">
+    <title>GitHub Actions Learning Hub</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#curriculum">Skip to curriculum</a>
+    <header class="hero">
+      <nav class="topbar" aria-label="Primary navigation">
+        <a class="brand" href="./"><span aria-hidden="true">⚙</span> Learn GitHub Actions</a>
+        <div class="nav-links"><a href="./quiz/">Full quiz</a><a href="https://github.com/mahsa-teimourikia/learn-github-actions">Repository</a></div>
+      </nav>
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">Architecture-first, security-aware</p>
+          <h1>Build workflows you can explain, trust, and operate.</h1>
+          <p class="lead">Follow six lessons from the execution model through reusable delivery, supply-chain security, and incident response. Every lesson pairs a technical chapter with workflow-native labs, realistic failure scenarios, reference implementations, and a checkpoint.</p>
+          <a class="primary" href="#curriculum">Start the curriculum</a>
+        </div>
+        <div class="model" aria-label="Course progression">
+          <span>Event</span><b>→</b><span>Workflow</span><b>→</b><span>Delivery</span><b>→</b><span>Operations</span>
+        </div>
+      </div>
+    </header>
+    <main id="curriculum">
+      <section class="overview" aria-labelledby="overview-title">
+        <div><p class="eyebrow">Learning path</p><h2 id="overview-title">Progress from syntax to operating judgment</h2></div>
+        <p><strong id="progress-copy">0 of 6 lessons complete</strong><progress id="course-progress" max="6" value="0">0 of 6</progress></p>
+      </section>
+      <section class="workspace">
+        <aside aria-label="Lesson filters and navigation">
+          <div class="filters" role="group" aria-label="Filter lessons">
+            <button class="filter active" data-level="all" type="button">All</button>
+            <button class="filter" data-level="beginner" type="button">Beginner</button>
+            <button class="filter" data-level="intermediate" type="button">Intermediate</button>
+            <button class="filter" data-level="advanced" type="button">Advanced</button>
+          </div>
+          <nav id="lesson-list" class="lesson-list" aria-label="Course lessons"></nav>
+        </aside>
+        <article class="lesson-panel" aria-live="polite">
+          <div class="lesson-heading"><div><p class="eyebrow" id="lesson-level"></p><h2 id="lesson-title"></h2></div><label class="complete-control"><input id="lesson-complete" type="checkbox"> Complete</label></div>
+          <p class="lesson-summary" id="lesson-summary"></p>
+          <div class="tabs" role="tablist" aria-label="Lesson sections">
+            <button class="tab active" data-tab="learn" role="tab" type="button">Learn</button>
+            <button class="tab" data-tab="lab" role="tab" type="button">Lab</button>
+            <button class="tab" data-tab="checkpoint" role="tab" type="button">Checkpoint</button>
+          </div>
+          <section id="tab-content" class="tab-content"></section>
+        </article>
+      </section>
+    </main>
+    <footer>
+      <a class="oneplus" href="https://oneplusi.io"><img src="./assets/one-plus-i.png" alt="One+i"><span>Responsible learning, real-world impact</span></a>
+      <p>Use the examples as starting points. Review permissions, pin dependencies, and replace every placeholder before production.</p>
+    </footer>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

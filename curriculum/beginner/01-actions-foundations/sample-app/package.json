@@ -1,0 +1,15 @@
+{
+  "name": "northstar-renewal-policy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "test:ci": "node scripts/test-ci.mjs",
+    "build": "node scripts/build.mjs",
+    "verify:dist": "node scripts/verify-dist.mjs"
+  }
+}

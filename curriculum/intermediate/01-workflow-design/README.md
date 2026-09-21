@@ -1,5 +1,15 @@
 # Core concepts and design choices
 
+## Lesson outcomes
+
+By the end of this lesson, you can select triggers from the trust boundary, choose cache versus artifact, decide between reusable workflows and composite actions, and design bounded matrix fan-out.
+
+**Prerequisites:** complete the [Beginner track](../../beginner/README.md) or be comfortable with workflow syntax and expressions.
+
+**Scenario:** a growing repository needs cross-platform tests, monorepo path filters, and one versioned CI contract shared by several callers. Study [`matrix-ci.yml`](matrix-ci.yml), [`path-filtered-ci.yml`](path-filtered-ci.yml), [`reusable-ci.yml`](reusable-ci.yml), and [`call-reusable-ci.yml`](call-reusable-ci.yml).
+
+**Success criteria:** choose an appropriate reuse boundary, identify hidden matrix cost, and make data handoffs explicit. Install the lesson-owned workflow examples on a practice branch, compare their run graphs and durations, and explain the trade-offs from observed evidence.
+
 ## Events: choose the trust boundary first
 
 The same code can be safe or unsafe depending on the event that runs it. A protected-branch push runs code maintainers accepted. A fork pull request may run arbitrary contributor code.
@@ -51,9 +61,9 @@ Approval is a repository setting plus a workflow reference; it is not a shell pr
 
 ## Build once, promote the same artifact
 
-![Build, test, artifact, approval, and deploy pipeline](../assets/deployment-pipeline.svg)
+![Build, test, artifact, approval, and deploy pipeline](../02-deployment-patterns/assets/deployment-pipeline.svg)
 
-<sub>Diagram source: [Mermaid](../assets/deployment-pipeline.mmd).</sub>
+<sub>Diagram source: [Mermaid](../02-deployment-patterns/assets/deployment-pipeline.mmd).</sub>
 
 Build once, verify the artifact, obtain approval, then deploy that same artifact. Rebuilding during deployment creates a second, potentially different input.
 

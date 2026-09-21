@@ -1,0 +1,13 @@
+{
+  "name": "learn-github-actions",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npm run test:quiz && npm run test:python && npm run test:learning && npm run test:pages",
+    "test:quiz": "npm --prefix quiz test",
+    "test:python": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "test:learning": "python3 scripts/validate_learning.py --all",
+    "build:pages": "node scripts/build-pages.mjs",
+    "test:pages": "npm run build:pages && node --test tests/pages-smoke.test.mjs"
+  }
+}

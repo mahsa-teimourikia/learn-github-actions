@@ -1,0 +1,11 @@
+# Diagnostic fixture: a required workflow skipped by top-level paths can remain pending.
+on:
+  pull_request:
+    paths:
+      - "services/catalog/**"
+
+jobs:
+  required-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This check does not exist for docs-only changes"

@@ -1,0 +1,33 @@
+[
+  {
+    "name": "documentation only",
+    "files": ["docs/operating-model.md"],
+    "expected": []
+  },
+  {
+    "name": "catalog change propagates to checkout",
+    "files": ["services/catalog/src/catalog.mjs"],
+    "expected": ["catalog", "checkout"]
+  },
+  {
+    "name": "leaf service stays bounded",
+    "files": ["services/notifications/src/notify.mjs"],
+    "expected": ["notifications"]
+  },
+  {
+    "name": "shared library reaches every dependent",
+    "files": ["packages/shared/src/money.mjs"],
+    "expected": ["catalog", "checkout", "notifications"]
+  },
+  {
+    "name": "workflow change is global",
+    "files": [".github/workflows/ci.yml"],
+    "expected": ["catalog", "checkout", "notifications"]
+  },
+  {
+    "name": "unknown source path fails closed",
+    "files": ["tools/generator/index.mjs"],
+    "expected": ["catalog", "checkout", "notifications"],
+    "failSafe": true
+  }
+]

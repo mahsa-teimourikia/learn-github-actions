@@ -17,10 +17,10 @@ export const lessons = [
   },
   {
     id: "i1-design", level: "intermediate", step: "01", title: "Workflow design",
-    summary: "Choose trust-aware events, control matrix fan-out, distinguish caches from artifacts, and design versioned reusable workflow interfaces.",
-    outcomes: ["Quantify matrix cost", "Choose reusable workflow versus composite action", "Make cross-job state explicit"],
-    readme: "curriculum/intermediate/01-workflow-design/README.md", labGuide: "curriculum/intermediate/01-workflow-design/README.md", starter: "curriculum/intermediate/01-workflow-design/matrix-ci.yml", solution: "curriculum/intermediate/01-workflow-design/reusable-ci.yml",
-    checkpoint: { question: "Which abstraction can own jobs, runners, permissions, and environments?", options: ["Composite action", "Reusable workflow", "Shell function"], answer: 1, explanation: "Reusable workflows package jobs and orchestration. Composite actions package steps inside the caller's job." }
+    summary: "Compile monorepo change risk into a bounded CI graph with dependency-aware selection, reusable contracts, stable gates, cancellation, and measurable cost.",
+    outcomes: ["Calculate critical path separately from runner consumption", "Evaluate an affected-service planner for false negatives", "Version a reusable service-CI contract and preserve one required check"],
+    readme: "curriculum/intermediate/01-workflow-design/README.md", labGuide: "curriculum/intermediate/01-workflow-design/exercises/README.md", starter: "curriculum/intermediate/01-workflow-design/exercises/01-baseline-monorepo-ci.yml", solution: "curriculum/intermediate/01-workflow-design/solutions/01-selective-monorepo-ci.yml",
+    checkpoint: { question: "A catalog change must also test checkout, which depends on it. What should the planner emit?", options: ["Only the directly changed catalog service", "Catalog and every transitive dependent, with selection reasons", "Every service only when the path glob times out"], answer: 1, explanation: "Path ownership identifies the direct change; dependency propagation preserves validation recall by selecting catalog and checkout." }
   },
   {
     id: "i2-deployment", level: "intermediate", step: "02", title: "Deployment patterns",

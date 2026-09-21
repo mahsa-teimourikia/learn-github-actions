@@ -1,0 +1,57 @@
+name: Lab - baseline monorepo CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  service-tests:
+    name: Test ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include:
+          - service: catalog
+            directory: services/catalog
+          - service: checkout
+            directory: services/checkout
+          - service: notifications
+            directory: services/notifications
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install the fixture
+        working-directory: curriculum/intermediate/01-workflow-design/monorepo-fixture
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Test the service
+        working-directory: curriculum/intermediate/01-workflow-design/monorepo-fixture
+        env:
+          SERVICE: ${{ matrix.service }}
+        run: npm run test:service
+
+  required-ci:
+    name: Required CI
+    if: ${{ always() }}
+    needs: service-tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Enforce the aggregate result
+        env:
+          SERVICE_RESULT: ${{ needs.service-tests.result }}
+        run: test "$SERVICE_RESULT" = "success"

@@ -1,0 +1,12 @@
+# Optional production upgrade for a public repository or supported private plan.
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+
+steps:
+  - uses: actions/attest@v4
+    with:
+      subject-path: dist/northstar-release.json
+  - name: Verify before promotion
+    run: gh attestation verify dist/northstar-release.json --repo "$GITHUB_REPOSITORY"

@@ -62,6 +62,12 @@ def validate_workflows() -> None:
     assert (design / "solutions/02-reusable-service-ci.yml").exists()
     assert (design / "monorepo-fixture/package-lock.json").exists()
 
+    deployment = ROOT / "curriculum/intermediate/02-deployment-patterns"
+    assert (deployment / "exercises/README.md").exists()
+    assert (deployment / "exercises/01-release-pipeline-starter.yml").exists()
+    assert (deployment / "solutions/01-hardened-release-pipeline.yml").exists()
+    assert (deployment / "release-fixture/package-lock.json").exists()
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()

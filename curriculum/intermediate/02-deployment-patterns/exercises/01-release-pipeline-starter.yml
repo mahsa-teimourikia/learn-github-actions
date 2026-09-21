@@ -1,0 +1,89 @@
+name: Lab - release pipeline starter
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: Semantic release version
+        required: true
+        type: string
+        default: v1.0.0
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      digest: ${{ steps.identity.outputs.digest }}
+      version: ${{ steps.identity.outputs.version }}
+      commit: ${{ steps.identity.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install and test the fixture
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+      - name: Build the release once
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          RELEASE_VERSION: ${{ inputs.release_version }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: npm run build
+      - name: Export immutable identity
+        id: identity
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        run: npm run manifest:outputs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: northstar-release-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  staging:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: lab-staging
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: northstar-release-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/dist/
+      - name: Verify the downloaded release
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
+          EXPECTED_VERSION: ${{ needs.build.outputs.version }}
+          EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run verify
+      - name: Seed the safe mock environment
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: staging
+        run: npm run seed
+      - name: Deploy to the safe mock
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: staging
+          IDEMPOTENCY_KEY: deploy:${{ needs.build.outputs.version }}:${{ github.sha }}
+        run: npm run deploy

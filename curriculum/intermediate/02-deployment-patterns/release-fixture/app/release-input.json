@@ -1,0 +1,5 @@
+{
+  "service": "northstar-checkout",
+  "runtime": "nodejs24",
+  "features": ["catalog", "checkout", "receipts"]
+}

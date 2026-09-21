@@ -1,0 +1,61 @@
+name: Validate deployment patterns course
+
+on:
+  pull_request:
+    paths:
+      - "curriculum/intermediate/02-deployment-patterns/**"
+      - "tests/test_deployment_patterns.py"
+      - ".github/workflows/validate-deployment-patterns-course.yml"
+  push:
+    branches: [main]
+    paths:
+      - "curriculum/intermediate/02-deployment-patterns/**"
+      - "tests/test_deployment_patterns.py"
+      - ".github/workflows/validate-deployment-patterns-course.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Validate starter and reference workflows
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo" \
+            --workdir /repo \
+            rhysd/actionlint:1.7.12 \
+            -color \
+            curriculum/intermediate/02-deployment-patterns/exercises/01-release-pipeline-starter.yml \
+            curriculum/intermediate/02-deployment-patterns/solutions/01-hardened-release-pipeline.yml
+
+  fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npm run build
+        env:
+          RELEASE_VERSION: v1.2.3
+          RELEASE_COMMIT: abcdef0123456789abcdef0123456789abcdef01
+      - run: npm run verify
+        env:
+          EXPECTED_VERSION: v1.2.3
+          EXPECTED_COMMIT: abcdef0123456789abcdef0123456789abcdef01
+      - run: npm run evaluate

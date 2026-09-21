@@ -1,0 +1,30 @@
+name: Course bug
+description: Report a broken workflow lab, fixture, quiz, or Hub behavior.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options: [Curriculum, Notebook, Python lab, Workflow example, Learning Hub, Quiz, Validation]
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Include the command, lesson path, and smallest sequence that reproduces the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system and Python/Node versions. Remove secrets and private logs.

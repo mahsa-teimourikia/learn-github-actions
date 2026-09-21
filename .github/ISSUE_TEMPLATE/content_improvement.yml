@@ -1,0 +1,21 @@
+name: Content improvement
+description: Suggest a correction, clearer explanation, stronger exercise, or updated official source.
+title: "[Content]: "
+labels: [documentation]
+body:
+  - type: input
+    id: location
+    attributes:
+      label: Lesson or file
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What should improve?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Proposed change and authoritative sources

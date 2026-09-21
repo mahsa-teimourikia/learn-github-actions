@@ -1,252 +1,102 @@
 # ✨ Learn GitHub Actions ✨
 
-> A self-contained learning path for designing, writing, debugging, securing, and operating GitHub Actions workflows.
+> A structured, hands-on course for designing, writing, debugging, securing, and operating GitHub Actions workflows.
 
-[![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-learning%20path-2088FF?logo=githubactions&logoColor=white)](https://docs.github.com/en/actions) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Validate learning materials](https://github.com/mahsa-teimourikia/learn-github-actions/actions/workflows/validate-learning.yml/badge.svg)](https://github.com/mahsa-teimourikia/learn-github-actions/actions/workflows/validate-learning.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![One+i](https://img.shields.io/badge/learning-One%2Bi-0969da)](https://oneplusi.io)
 
-GitHub Actions is GitHub's automation platform for CI/CD and repository automation. A workflow is a YAML file in `.github/workflows/`; events trigger jobs, jobs run on runners, and steps execute commands or reusable actions. This repository teaches the mental model first, then provides complete scenario recipes you can copy and adapt.
+GitHub Actions is GitHub's workflow automation platform for CI/CD and repository operations. Events trigger workflows, jobs run on isolated runners, and steps execute commands or reusable actions. The engineering challenge is not merely writing YAML—it is choosing safe trust boundaries, explicit state handoffs, reliable delivery controls, and observable recovery paths.
 
-The examples use readable major-version references. For production, follow the [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use) and pin third-party actions to reviewed full-length commit SHAs.
+## Start in the Learning Hub
 
-## Contents
+**[Open the GitHub Actions Learning Hub →](https://mahsa-teimourikia.github.io/learn-github-actions/)**
 
-- [Start here](#start-here)
-- [Visual model](#visual-model)
-- [Learning path](#learning-path)
-- [Scenario cookbook](#scenario-cookbook)
-- [Core concepts](#core-concepts)
-- [Guidelines and conventions](#guidelines-and-conventions)
-- [Reusable code snippets](#reusable-code-snippets)
-- [Security and reliability](#security-and-reliability)
-- [Debugging and operations](#debugging-and-operations)
-- [Interactive knowledge check](#interactive-knowledge-check)
-- [Official documentation](#official-documentation)
+The Hub is the main entry point. Filter by level, select a lesson, and work through **Learn → Lab → Checkpoint**. It tracks progress locally in your browser and links every lesson to its technical chapter, workflow lab, starter, and reference implementation.
 
-## Start here
+Prefer repository navigation? Open the [curriculum index](curriculum/README.md) or take the [full knowledge check](https://mahsa-teimourikia.github.io/learn-github-actions/quiz/).
 
-1. Read [What is GitHub Actions?](docs/what-is-github-actions.md) to learn the event → workflow → job → runner → step model.
-2. Work through [Workflow syntax](docs/workflow-syntax.md), then create a small CI workflow in a test repository.
-3. Pick a scenario from the [cookbook](#scenario-cookbook) and copy the matching example.
-4. Add explicit permissions, concurrency, timeouts, caching, and artifact retention.
-5. Learn how to debug failures and secure untrusted pull requests before adding deployment credentials.
-6. Take the [interactive knowledge check](https://mahsa-teimourikia.github.io/learn-github-actions/) to test your understanding.
+## Curriculum roadmap
 
-## Visual model
+| Level | Lesson | Capability |
+| --- | --- | --- |
+| Beginner | [Actions foundations](curriculum/beginner/01-actions-foundations/README.md) | Trace event → workflow → job → runner → step → result |
+| Beginner | [Workflow syntax](curriculum/beginner/02-workflow-syntax/README.md) | Author triggers, permissions, dependencies, expressions, matrices, and concurrency |
+| Intermediate | [Workflow design](curriculum/intermediate/01-workflow-design/README.md) | Choose reuse boundaries, control fan-out, and make data movement explicit |
+| Intermediate | [Deployment patterns](curriculum/intermediate/02-deployment-patterns/README.md) | Build once, promote immutably, protect environments, and use OIDC |
+| Advanced | [Security and reliability](curriculum/advanced/01-security-and-reliability/README.md) | Threat-model events, dependencies, credentials, runners, and retries |
+| Advanced | [Debugging and operations](curriculum/advanced/02-debugging-and-operations/README.md) | Investigate failures, preserve evidence, observe runs, and recover safely |
 
-![GitHub Actions execution model from event to workflow, jobs, runners, steps, artifacts, and environments](assets/actions-flow.svg)
+See the [course improvement plan](COURSE_PLAN.md) for the evidence-based lesson review sequence and [ROADMAP.md](ROADMAP.md) for longer-term additions.
 
-<sub>Diagram source: [Mermaid](assets/actions-flow.mmd).</sub>
+## Repository structure
 
 ```text
-event → workflow → jobs → runner → steps → outputs/artifacts/deployment
+curriculum/
+├── beginner/
+├── intermediate/
+└── advanced/       # each lesson owns its chapter and workflow-native labs
+hub/                # static GitHub Pages Learning Hub
+quiz/               # full interactive knowledge check
+assets/             # shared brand assets only
+scripts/            # link, workflow-lab, and Pages validation
+tests/              # built-site smoke tests
+.github/             # validation, Pages deployment, and contribution templates
 ```
 
-The execution model is simple. The engineering decisions are in event filters, permissions, matrices, reusable workflows, environments, and safe boundaries around untrusted code.
+The previous parallel `docs/` and `examples/` trees have been consolidated. Lesson-specific explanations and workflows now live together, so moving or extending a lesson does not leave its practical material disconnected.
 
-## Learning path
+## Run locally
 
-### 1. Foundations
+Requirements: Python 3.11 or newer, Node.js 22 or newer, and GNU Make.
 
-- [What is GitHub Actions?](docs/what-is-github-actions.md)
-- [Workflow syntax](docs/workflow-syntax.md)
-- Official [quickstart](https://docs.github.com/en/actions/get-started/quickstart)
-- Official [workflow concepts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows)
-
-### 2. Build useful workflows
-
-- [Scenario cookbook](docs/scenarios.md)
-- [Core concepts](docs/core-concepts.md)
-- [Workflow commands](https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions)
-- [Contexts and expressions](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions)
-
-### 3. Reuse and scale
-
-- [Reusable workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows)
-- [Composite actions](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action)
-- [Matrix strategies](https://docs.github.com/en/actions/using-jobs/using-a-matrix-for-your-jobs)
-- [Caching dependencies](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
-
-### 4. Deploy and operate safely
-
-- [Security and reliability](docs/security-and-reliability.md)
-- [Debugging and operations](docs/debugging-and-operations.md)
-- [Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
-- [OpenID Connect](https://docs.github.com/en/actions/concepts/security/openid-connect)
-- [Artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)
-
-## Scenario cookbook
-
-| Scenario | Example | Key ideas |
-| --- | --- | --- |
-| Run tests on every pull request | [Node CI](examples/ci-node.yml) | `pull_request`, setup, cache, test, artifact |
-| Test runtimes and operating systems | [Matrix CI](examples/matrix-ci.yml) | `strategy.matrix`, `fail-fast`, `include` |
-| Validate a monorepo selectively | [Path filters](examples/path-filtered-ci.yml) | `paths`, job conditions, changed scope |
-| Share one organization-standard pipeline | [Reusable workflow](examples/reusable-ci.yml) | `workflow_call`, inputs, secrets, outputs |
-| Publish a release artifact | [Release workflow](examples/release.yml) | tags, artifacts, release permissions |
-| Deploy with approvals | [Environment deployment](examples/environment-deployment.yml) | environments, reviewers, concurrency |
-| Deploy without long-lived cloud keys | [OIDC deployment](examples/oidc-deployment.yml) | `id-token: write`, trust conditions |
-| Build once and promote the same artifact | [Build and promote](examples/build-and-promote.yml) | artifact handoff, immutable output |
-| Run maintenance on a schedule | [Scheduled workflow](examples/scheduled-maintenance.yml) | `schedule`, idempotency, observability |
-| Respond to manual requests | [Manual dispatch](examples/manual-dispatch.yml) | typed inputs, approvals, safe defaults |
-| Publish a static site | [Pages deployment](examples/pages-deployment.yml) | artifact upload, Pages deployment |
-| Add security scanning | [Security scan](examples/security-scan.yml) | permissions, SARIF, PR boundaries |
-
-## Core concepts
-
-### Events
-
-Events decide when a workflow is eligible to run. Common triggers include `push`, `pull_request`, `workflow_dispatch`, `workflow_call`, `schedule`, `release`, and `workflow_run`. Use filters to reduce noise and risk:
-
-```yaml
-on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "src/**"
-      - "package.json"
-      - "package-lock.json"
+```bash
+make test
 ```
 
-### Jobs and dependencies
+This validates all local Markdown links and workflow-lab structure, executes the sample application and focused tests, tests quiz grading, builds the static Hub plus quiz, and smoke-tests the output. No API keys or GitHub tokens are required for repository validation; learner workflow experiments run on a practice branch or fork.
 
-Jobs are isolated execution units. Use `needs` to express dependencies and pass small, explicit outputs between jobs:
+To preview the generated site:
 
-```yaml
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    outputs:
-      artifact-name: ${{ steps.meta.outputs.name }}
-    steps:
-      - id: meta
-        run: echo "name=app-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Deploy ${{ needs.build.outputs.artifact-name }}"
+```bash
+make pages
+python3 -m http.server 8000 --directory site
 ```
 
-### Caches and artifacts
+Then open `http://localhost:8000`.
 
-Caches speed up deterministic dependency downloads; artifacts preserve build output or pass files between jobs. Build once, then promote the same immutable artifact. Never use either mechanism for secrets.
+## How the examples are designed
 
-### Environments
+- Pull-request validation starts read-only and receives no deployment credentials.
+- Build output crosses jobs as an artifact; dependency caches are never treated as release artifacts.
+- Privileged deployment permissions belong only to deployment jobs.
+- Production side effects use environments, concurrency, and explicit retry/reconciliation policy.
+- OIDC examples avoid long-lived cloud keys and require constrained cloud-side trust.
+- Workflow inputs and event fields are treated as untrusted data at shell boundaries.
+- Major action tags are readable for learning; production use should pin reviewed full commit SHAs.
 
-Environments group deployment variables and protection rules such as required reviewers, wait timers, and branch restrictions. Put production jobs behind an environment; do not implement approval with a shell prompt.
+## Practical guides
 
-## Guidelines and conventions
+- [Event and execution model](curriculum/beginner/01-actions-foundations/README.md)
+- [Workflow syntax reference](curriculum/beginner/02-workflow-syntax/README.md)
+- [Cache, artifact, matrix, and reuse decisions](curriculum/intermediate/01-workflow-design/README.md)
+- [Scenario and deployment cookbook](curriculum/intermediate/02-deployment-patterns/README.md)
+- [Security review checklist](curriculum/advanced/01-security-and-reliability/README.md)
+- [Failure triage and incident response](curriculum/advanced/02-debugging-and-operations/README.md)
 
-1. Name workflows by outcome: `CI`, `Deploy production`, or `Nightly maintenance`.
-2. Keep triggers narrow; start with the smallest event and path filter that meets the requirement.
-3. Begin with `permissions: { contents: read }`, then add only what a job needs.
-4. Pin third-party actions to a reviewed full commit SHA in production.
-5. Set `timeout-minutes` on jobs and long-running commands.
-6. Use `concurrency` for deployments: cancel stale previews and serialize production.
-7. Separate build and deploy so tests do not receive production credentials.
-8. Pass artifacts rather than relying on workspace state across jobs.
-9. Make writes idempotent; retries must not publish or migrate twice.
-10. Treat fork pull requests as hostile; never expose secrets to untrusted code.
-11. Prefer OIDC to long-lived cloud keys.
-12. Log useful metadata, not secrets or complete secret-bearing contexts.
-13. Test workflows like code with YAML linting, expression validation, and a real run.
-14. Document repository settings, environments, variables, secrets, and branch rules.
-
-## Reusable code snippets
-
-### Least-privilege baseline
-
-```yaml
-permissions:
-  contents: read
-```
-
-### Cache Node dependencies
-
-```yaml
-- uses: actions/setup-node@v4
-  with:
-    node-version: 22
-    cache: npm
-- run: npm ci
-```
-
-### Upload and download an artifact
-
-```yaml
-- uses: actions/upload-artifact@v4
-  with:
-    name: dist-${{ github.sha }}
-    path: dist/
-    if-no-files-found: error
-
-- uses: actions/download-artifact@v4
-  with:
-    name: dist-${{ github.sha }}
-    path: dist/
-```
-
-### Serialize production deployments
-
-```yaml
-concurrency:
-  group: production
-  cancel-in-progress: false
-```
-
-### Emit a step output safely
-
-```yaml
-- id: version
-  run: echo "value=$(node -p 'require(\"./package.json\").version')" >> "$GITHUB_OUTPUT"
-- run: echo "Version ${{ steps.version.outputs.value }}"
-```
-
-## Security and reliability
-
-Read [Security and reliability](docs/security-and-reliability.md) before adding secrets or deployment jobs. The short version:
-
-- default `GITHUB_TOKEN` to read-only;
-- grant write permissions only to the job that needs them;
-- pin third-party actions to reviewed SHAs;
-- keep secrets out of fork-triggered code paths;
-- use environments for production approvals;
-- use OIDC instead of long-lived cloud credentials;
-- isolate self-hosted runners;
-- validate shell inputs and avoid interpolating untrusted values into `run:`; and
-- retain logs, artifacts, provenance, and run metadata to investigate failures.
-
-## Debugging and operations
-
-When a workflow fails: identify the event and commit, read the first failing step, check contexts and permissions, reproduce the command locally, add targeted debug logging without secrets, and determine whether the failure is deterministic, flaky, or external. See [Debugging and operations](docs/debugging-and-operations.md).
-
-## Interactive knowledge check
-
-Take the [GitHub Actions Knowledge Check](https://mahsa-teimourikia.github.io/learn-github-actions/)—18 multiple-answer questions covering workflow structure, events, expressions, reuse, artifacts, deployment, and security. The quiz grades exact answer sets, reports topic scores, shows explanations on request, and saves progress only in the browser.
-
-## Official documentation
+## Official references
 
 - [GitHub Actions documentation](https://docs.github.com/en/actions)
-- [Quickstart](https://docs.github.com/en/actions/get-started/quickstart)
-- [Workflow concepts](https://docs.github.com/en/actions/concepts/workflows-and-actions/workflows)
-- [Workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
+- [Workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
 - [Events that trigger workflows](https://docs.github.com/en/actions/reference/events-that-trigger-workflows)
 - [Contexts](https://docs.github.com/en/actions/reference/accessing-contextual-information-about-workflow-runs)
-- [Expressions](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions)
 - [Reusable workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows)
-- [Composite actions](https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action)
-- [Caching](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
-- [Artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts)
 - [Environments](https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment)
-- [OIDC](https://docs.github.com/en/actions/concepts/security/openid-connect)
-- [Secure use](https://docs.github.com/en/actions/reference/security/secure-use)
+- [OpenID Connect](https://docs.github.com/en/actions/concepts/security/openid-connect)
+- [Secure use reference](https://docs.github.com/en/actions/reference/security/secure-use)
 - [Artifact attestations](https://docs.github.com/en/actions/how-tos/secure-your-work/use-artifact-attestations/use-artifact-attestations)
-- [GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners)
-- [Self-hosted runners](https://docs.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners)
 
-## Contributing
+## Contributing and support
 
-Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md), prefer official GitHub documentation, and include a complete scenario or focused explanation with a runnable example.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a lesson or workflow. Community and reporting guidance is in [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md), [SUPPORT.md](SUPPORT.md), and [SECURITY.md](SECURITY.md).
 
 ## License
 

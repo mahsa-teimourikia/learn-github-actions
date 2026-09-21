@@ -1,5 +1,15 @@
 # Debugging and operations
 
+## Lesson outcomes
+
+By the end of this lesson, you can investigate a failed run from evidence, distinguish deterministic, flaky, external, and permission failures, define useful workflow telemetry, and write an incident response sequence.
+
+**Prerequisites:** [Security and reliability](../01-security-and-reliability/README.md).
+
+**Scenario:** a nightly maintenance workflow sometimes fails, occasionally overlaps with a manual rerun, and may have completed an external write before timing out.
+
+**Success criteria:** start from the first failing step, preserve provenance, choose bounded retry only for safe operations, and verify external state before repeating a write. [`scheduled-maintenance.yml`](scheduled-maintenance.yml) is the workflow lab; run it against a safe mock target, inject failures, and reconstruct the incident from GitHub run evidence.
+
 ## Read a failed run systematically
 
 1. Confirm the event, branch, commit, actor, and workflow revision.

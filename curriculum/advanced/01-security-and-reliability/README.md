@@ -1,5 +1,15 @@
 # Security and reliability
 
+## Lesson outcomes
+
+By the end of this lesson, you can threat-model workflow events, scope the `GITHUB_TOKEN`, avoid shell injection, pin dependencies, isolate untrusted code, and design retry-safe side effects.
+
+**Prerequisites:** [Workflow design](../../intermediate/01-workflow-design/README.md) and [Deployment patterns](../../intermediate/02-deployment-patterns/README.md).
+
+**Scenario:** a public repository must test fork contributions and publish trusted releases without exposing credentials or letting mutable dependencies expand the blast radius.
+
+**Success criteria:** classify trust boundaries, identify unsafe interpolation, and explain the permissions in [`security-scan.yml`](security-scan.yml). Install vulnerable workflows only in a disposable practice repository with no secrets, then harden them and compare scanner findings and run permissions. Educational examples use readable major tags; production workflows should pin reviewed full SHAs.
+
 GitHub Actions workflows are executable supply-chain configuration. They can read repository contents, run arbitrary commands, access tokens, publish artifacts, and change external systems. Treat workflow changes like application code.
 
 ## Least privilege

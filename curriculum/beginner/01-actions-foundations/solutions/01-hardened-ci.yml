@@ -1,0 +1,105 @@
+name: Northstar renewal policy CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - "curriculum/beginner/01-actions-foundations/sample-app/**"
+      - ".github/workflows/lab-actions-foundations.yml"
+  push:
+    branches: [main]
+    paths:
+      - "curriculum/beginner/01-actions-foundations/sample-app/**"
+      - ".github/workflows/lab-actions-foundations.yml"
+
+# The sample workflow restores caches read-only. A separate trusted workflow can
+# populate shared caches after merge; untrusted pull-request code cannot poison them.
+cache-mode: read
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Test and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: curriculum/beginner/01-actions-foundations/sample-app
+    steps:
+      # Major tags are readable for this course. Pin reviewed full SHAs in production.
+      - name: Check out the event revision
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Install exactly from the lockfile
+        run: npm ci
+
+      - name: Run the policy test suite
+        run: npm run test:ci
+
+      - name: Build the release candidate
+        run: npm run build
+
+      - name: Upload diagnostic test output even after a failed test
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-${{ github.run_id }}-${{ github.run_attempt }}
+          path: curriculum/beginner/01-actions-foundations/sample-app/test-results/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload the immutable release candidate
+        uses: actions/upload-artifact@v7
+        with:
+          name: northstar-policy-${{ github.sha }}
+          path: curriculum/beginner/01-actions-foundations/sample-app/dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  verify_artifact:
+    name: Verify isolated artifact handoff
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Install Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+
+      - name: Download the exact artifact produced by quality
+        uses: actions/download-artifact@v8
+        with:
+          name: northstar-policy-${{ github.sha }}
+          path: dist
+
+      - name: Verify artifact identity and digest without the source workspace
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { createHash } from "node:crypto";
+          import { readFile } from "node:fs/promises";
+
+          const manifest = JSON.parse(await readFile("dist/manifest.json", "utf8"));
+          const source = await readFile(`dist/${manifest.files[0].path}`);
+          const digest = createHash("sha256").update(source).digest("hex");
+          assert.equal(digest, manifest.files[0].sha256);
+          console.log(`verified ${manifest.artifact} sha256=${digest.slice(0, 12)}…`);
+          NODE

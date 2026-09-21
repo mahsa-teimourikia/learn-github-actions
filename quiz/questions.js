@@ -6,7 +6,7 @@ export const questions = [
     options: ["Events can trigger workflows", "Jobs run on runners", "Steps can run commands or actions", "Every job shares one persistent filesystem", "Artifacts can carry files between jobs"],
     correct: [0, 1, 2, 4],
     explanation: "Events make workflows eligible, jobs execute on runners, steps run commands or actions, and artifacts carry files. Jobs should not assume a shared persistent filesystem.",
-    source: { label: "What is GitHub Actions? — The pieces", url: "docs/what-is-github-actions.md#the-pieces" },
+    source: { label: "What is GitHub Actions? — The pieces", url: "curriculum/beginner/01-actions-foundations/README.md#the-pieces" },
   },
   {
     id: "foundations-events",
@@ -15,7 +15,7 @@ export const questions = [
     options: ["A push to a selected branch", "A pull request activity type", "A manual workflow_dispatch run", "A scheduled cron event", "Only a local terminal command"],
     correct: [0, 1, 2, 3],
     explanation: "Push, pull request, manual dispatch, and schedule are workflow triggers. A local terminal command is not itself a GitHub Actions event.",
-    source: { label: "Workflow syntax — on", url: "docs/workflow-syntax.md#on" },
+    source: { label: "Workflow syntax — on", url: "curriculum/beginner/02-workflow-syntax/README.md#on" },
   },
   {
     id: "foundations-runner",
@@ -24,7 +24,7 @@ export const questions = [
     options: ["GitHub-hosted runners should be treated as fresh machines", "Jobs should explicitly check out and install what they need", "Self-hosted runners require stronger isolation", "A later job automatically sees the previous job's workspace", "Persistent self-hosted state can expand blast radius"],
     correct: [0, 1, 2, 4],
     explanation: "Hosted runners are disposable and jobs are isolated. Self-hosted runners persist and can reach more infrastructure, so their isolation and cleanup requirements are stronger.",
-    source: { label: "What is GitHub Actions? — Runner", url: "docs/what-is-github-actions.md#runner" },
+    source: { label: "What is GitHub Actions? — Runner", url: "curriculum/beginner/01-actions-foundations/README.md#runner" },
   },
   {
     id: "syntax-permissions",
@@ -33,7 +33,7 @@ export const questions = [
     options: ["Start with contents: read", "Elevate permissions only on the job that needs them", "Use id-token: write for OIDC token requests", "Grant contents: write to every test job", "Document why an elevated scope is needed"],
     correct: [0, 1, 2, 4],
     explanation: "Least privilege means a read-only baseline and narrow job-level elevation. OIDC needs id-token: write, while contents: write should not be granted to ordinary tests.",
-    source: { label: "Workflow syntax — permissions", url: "docs/workflow-syntax.md#permissions" },
+    source: { label: "Workflow syntax — permissions", url: "curriculum/beginner/02-workflow-syntax/README.md#permissions" },
   },
   {
     id: "syntax-matrix",
@@ -42,7 +42,7 @@ export const questions = [
     options: ["fail-fast", "max-parallel", "include", "exclude", "A matrix automatically grants secrets to every combination"],
     correct: [0, 1, 2, 3],
     explanation: "fail-fast, max-parallel, include, and exclude control matrix fan-out. A matrix does not change the workflow's secret or permission model.",
-    source: { label: "Workflow syntax — Matrix strategies", url: "docs/workflow-syntax.md#matrix-strategies" },
+    source: { label: "Workflow syntax — Matrix strategies", url: "curriculum/beginner/02-workflow-syntax/README.md#matrix-strategies" },
   },
   {
     id: "syntax-injection",
@@ -51,7 +51,7 @@ export const questions = [
     options: ["Pass event fields through environment variables", "Quote shell variable expansions", "Validate allowlisted values", "Interpolate arbitrary issue titles directly into run", "Prefer structured action inputs where possible"],
     correct: [0, 1, 2, 4],
     explanation: "Event fields are untrusted. Environment variables, quoting, validation, and structured inputs reduce shell interpretation risk; direct interpolation is dangerous.",
-    source: { label: "Security — Shell injection", url: "docs/security-and-reliability.md#shell-injection" },
+    source: { label: "Security — Shell injection", url: "curriculum/advanced/01-security-and-reliability/README.md#shell-injection" },
   },
   {
     id: "reuse-workflow",
@@ -60,7 +60,7 @@ export const questions = [
     options: ["Typed workflow_call inputs", "Explicitly declared secrets", "Documented outputs and permissions", "A large undocumented collection of implicit inputs", "Backwards-compatible changes"],
     correct: [0, 1, 2, 4],
     explanation: "Reusable workflows behave like APIs. Typed inputs, explicit secrets, documented outputs and permissions, and compatibility make callers predictable.",
-    source: { label: "Scenario cookbook — Reusable organization workflow", url: "docs/scenarios.md#reusable-organization-workflow" },
+    source: { label: "Scenario cookbook — Reusable organization workflow", url: "curriculum/intermediate/02-deployment-patterns/README.md#reusable-organization-workflow" },
   },
   {
     id: "reuse-cache-artifact",
@@ -69,7 +69,7 @@ export const questions = [
     options: ["Caches speed up repeatable dependency downloads", "Artifacts preserve or pass job output", "Cache keys should include dependency identity", "Artifacts are a safe place for long-lived secrets", "Build outputs are usually better represented as artifacts"],
     correct: [0, 1, 2, 4],
     explanation: "Caches optimize repeatable inputs, while artifacts preserve outputs. Neither should contain secrets, and cache keys need dependency identity.",
-    source: { label: "Core concepts — Caches versus artifacts", url: "docs/core-concepts.md#caches-versus-artifacts" },
+    source: { label: "Core concepts — Caches versus artifacts", url: "curriculum/intermediate/01-workflow-design/README.md#caches-versus-artifacts" },
   },
   {
     id: "reuse-composite",
@@ -78,7 +78,7 @@ export const questions = [
     options: ["When packaging multiple jobs", "When the abstraction owns environments or matrices", "When callers need a typed secrets interface", "When packaging only a repeated step sequence", "When job-level permissions are part of the contract"],
     correct: [0, 1, 2, 4],
     explanation: "Reusable workflows package jobs and job-level orchestration. Composite actions package steps within the caller's job and are the simpler fit for step reuse.",
-    source: { label: "Core concepts — Reusable workflows versus composite actions", url: "docs/core-concepts.md#reusable-workflows-versus-composite-actions" },
+    source: { label: "Core concepts — Reusable workflows versus composite actions", url: "curriculum/intermediate/01-workflow-design/README.md#reusable-workflows-versus-composite-actions" },
   },
   {
     id: "deploy-artifact",
@@ -87,7 +87,7 @@ export const questions = [
     options: ["Build one immutable artifact", "Test or scan that artifact", "Deploy the same artifact to staging and production", "Rebuild independently during production deployment", "Keep the artifact tied to a commit or checksum"],
     correct: [0, 1, 2, 4],
     explanation: "Build once, verify, and promote the same immutable output. Rebuilding at deploy time can produce a different, untested input.",
-    source: { label: "Core concepts — Build once", url: "docs/core-concepts.md#build-once-promote-the-same-artifact" },
+    source: { label: "Core concepts — Build once", url: "curriculum/intermediate/01-workflow-design/README.md#build-once-promote-the-same-artifact" },
   },
   {
     id: "deploy-environment",
@@ -96,7 +96,7 @@ export const questions = [
     options: ["A protected GitHub environment", "Required reviewers or branch restrictions", "A concurrency group for the production resource", "Production credentials in every pull-request job", "A clear rollback or cancellation policy"],
     correct: [0, 1, 2, 4],
     explanation: "Environments, review rules, concurrency, and rollback policy protect production. Pull-request test jobs should not receive production credentials.",
-    source: { label: "Security — Environments", url: "docs/security-and-reliability.md#environments" },
+    source: { label: "Security — Environments", url: "curriculum/advanced/01-security-and-reliability/README.md#environments" },
   },
   {
     id: "deploy-oidc",
@@ -105,7 +105,7 @@ export const questions = [
     options: ["The job needs id-token: write", "Cloud trust should restrict repository and branch/environment claims", "OIDC can avoid long-lived cloud keys", "The workflow should print the identity token for debugging", "The permission can be limited to the deploy job"],
     correct: [0, 1, 2, 4],
     explanation: "OIDC uses a short-lived token, requires id-token: write, and should be constrained by cloud trust conditions. Tokens must never be printed.",
-    source: { label: "Scenario cookbook — Cloud deployment with OIDC", url: "docs/scenarios.md#cloud-deployment-with-oidc" },
+    source: { label: "Scenario cookbook — Cloud deployment with OIDC", url: "curriculum/intermediate/02-deployment-patterns/README.md#cloud-deployment-with-oidc" },
   },
   {
     id: "security-forks",
@@ -114,7 +114,7 @@ export const questions = [
     options: ["Fork code can change tests and dependency hooks", "pull_request jobs should avoid secrets", "pull_request_target can have base-repo privileges", "It is safe to execute fork code in a privileged pull_request_target job", "The trust boundary should be documented"],
     correct: [0, 1, 2, 4],
     explanation: "Fork code is untrusted. pull_request is safer for validation; pull_request_target has base-repository context and must never blindly execute fork code.",
-    source: { label: "Security — Untrusted pull requests", url: "docs/security-and-reliability.md#untrusted-pull-requests" },
+    source: { label: "Security — Untrusted pull requests", url: "curriculum/advanced/01-security-and-reliability/README.md#untrusted-pull-requests" },
   },
   {
     id: "security-pinning",
@@ -123,7 +123,7 @@ export const questions = [
     options: ["Pin third-party actions to reviewed full SHAs", "Keep a human-readable version comment", "Review action updates deliberately", "Assume a mutable major tag cannot change", "Use least-privilege permissions"],
     correct: [0, 1, 2, 4],
     explanation: "Full SHA pinning reduces mutable-tag drift, while comments and deliberate updates preserve maintainability. Least privilege limits impact if something fails.",
-    source: { label: "Security — Pin actions", url: "docs/security-and-reliability.md#pin-actions" },
+    source: { label: "Security — Pin actions", url: "curriculum/advanced/01-security-and-reliability/README.md#pin-actions" },
   },
   {
     id: "security-reliability",
@@ -132,7 +132,7 @@ export const questions = [
     options: ["Timeouts", "Concurrency groups", "Idempotency keys or state checks", "Blindly retrying a release after a timeout", "External verification and reconciliation"],
     correct: [0, 1, 2, 4],
     explanation: "Timeouts, serialized runs, idempotency, verification, and reconciliation bound and recover side effects. Blind retries can duplicate an uncertain write.",
-    source: { label: "Security — Reliability controls", url: "docs/security-and-reliability.md#reliability-controls" },
+    source: { label: "Security — Reliability controls", url: "curriculum/advanced/01-security-and-reliability/README.md#reliability-controls" },
   },
   {
     id: "operations-debug",
@@ -141,7 +141,7 @@ export const questions = [
     options: ["The first failed step", "Event, branch, commit, actor, and workflow revision", "Permissions and environment approvals", "Only the final summary line", "Runner OS, tool versions, and working directory"],
     correct: [0, 1, 2, 4],
     explanation: "The first failure and run metadata establish the cause. Permissions, approvals, runner, versions, and directory often explain CI-only failures.",
-    source: { label: "Debugging — Read a failed run systematically", url: "docs/debugging-and-operations.md#read-a-failed-run-systematically" },
+    source: { label: "Debugging — Read a failed run systematically", url: "curriculum/advanced/02-debugging-and-operations/README.md#read-a-failed-run-systematically" },
   },
   {
     id: "operations-schedule",
@@ -150,7 +150,7 @@ export const questions = [
     options: ["Use UTC and document the schedule", "Make the operation idempotent", "Use a low-privilege token", "Assume scheduled runs can never be delayed", "Notify or create an issue on failure"],
     correct: [0, 1, 2, 4],
     explanation: "Schedules can be delayed or duplicated. UTC documentation, idempotency, least privilege, and failure notification make maintenance operable.",
-    source: { label: "Scenario cookbook — Scheduled maintenance", url: "docs/scenarios.md#scheduled-maintenance" },
+    source: { label: "Scenario cookbook — Scheduled maintenance", url: "curriculum/intermediate/02-deployment-patterns/README.md#scheduled-maintenance" },
   },
   {
     id: "operations-observe",
@@ -159,6 +159,6 @@ export const questions = [
     options: ["Commit and workflow/action versions", "Artifact names and checksums", "Actor, event, environment, and deployment ID", "Secret values and full environment dumps", "Duration and failure category"],
     correct: [0, 1, 2, 4],
     explanation: "Versions, provenance, actors, environments, IDs, duration, and failure categories support investigation. Secret values must not be logged.",
-    source: { label: "Debugging — Observability", url: "docs/debugging-and-operations.md#observability" },
+    source: { label: "Debugging — Observability", url: "curriculum/advanced/02-debugging-and-operations/README.md#observability" },
   },
 ];

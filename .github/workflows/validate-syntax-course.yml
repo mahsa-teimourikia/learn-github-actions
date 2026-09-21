@@ -1,0 +1,53 @@
+name: Validate workflow syntax course
+
+on:
+  pull_request:
+    paths:
+      - "curriculum/beginner/02-workflow-syntax/**"
+      - "tests/test_workflow_syntax.py"
+      - ".github/workflows/validate-syntax-course.yml"
+  push:
+    branches: [main]
+    paths:
+      - "curriculum/beginner/02-workflow-syntax/**"
+      - "tests/test_workflow_syntax.py"
+      - ".github/workflows/validate-syntax-course.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Validate starter and reference workflows
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo" \
+            --workdir /repo \
+            rhysd/actionlint:1.7.12 \
+            -color \
+            curriculum/beginner/02-workflow-syntax/exercises/01-release-orchestration-starter.yml \
+            curriculum/beginner/02-workflow-syntax/solutions/01-release-orchestration.yml
+
+  fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test

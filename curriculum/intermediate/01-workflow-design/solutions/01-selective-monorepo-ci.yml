@@ -1,0 +1,101 @@
+name: Lab - selective monorepo CI
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      changed_files_json:
+        description: Repository-relative fixture paths to evaluate
+        required: true
+        type: string
+        default: '["services/catalog/src/catalog.mjs"]'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  plan:
+    name: Plan affected services
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      run-services: ${{ steps.plan.outputs.run_services }}
+      selected-count: ${{ steps.plan.outputs.selected_count }}
+      jobs-avoided: ${{ steps.plan.outputs.jobs_avoided }}
+      fail-safe: ${{ steps.plan.outputs.fail_safe }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install the planner fixture
+        working-directory: curriculum/intermediate/01-workflow-design/monorepo-fixture
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Create the change plan
+        id: plan
+        working-directory: curriculum/intermediate/01-workflow-design/monorepo-fixture
+        env:
+          CHANGED_FILES_JSON: ${{ inputs.changed_files_json }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+            git diff --name-only --relative "$BASE_SHA" "$HEAD_SHA" -- . > "$RUNNER_TEMP/changed-files.txt"
+            node scripts/plan-changes.mjs --files "$RUNNER_TEMP/changed-files.txt"
+          else
+            node scripts/plan-changes.mjs
+          fi
+
+  service-ci:
+    name: ${{ matrix.service }} contract v1
+    if: ${{ needs.plan.outputs.run-services == 'true' }}
+    needs: plan
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    uses: ./.github/workflows/lab-reusable-service-ci.yml
+    with:
+      contract-version: v1
+      fixture-root: curriculum/intermediate/01-workflow-design/monorepo-fixture
+      service: ${{ matrix.service }}
+      service-directory: ${{ matrix.directory }}
+
+  required-ci:
+    name: Required CI
+    if: ${{ always() && !cancelled() }}
+    needs: [plan, service-ci]
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Enforce planner and service conclusions
+        env:
+          PLAN_RESULT: ${{ needs.plan.result }}
+          RUN_SERVICES: ${{ needs.plan.outputs.run-services }}
+          SERVICE_RESULT: ${{ needs.service-ci.result }}
+          SELECTED_COUNT: ${{ needs.plan.outputs.selected-count }}
+          JOBS_AVOIDED: ${{ needs.plan.outputs.jobs-avoided }}
+          FAIL_SAFE: ${{ needs.plan.outputs.fail-safe }}
+        run: |
+          test "$PLAN_RESULT" = "success"
+          if [[ "$RUN_SERVICES" == "true" ]]; then
+            test "$SERVICE_RESULT" = "success"
+          else
+            test "$SERVICE_RESULT" = "skipped"
+          fi
+          {
+            echo "## Required CI"
+            echo ""
+            echo "- Selected services: $SELECTED_COUNT"
+            echo "- Jobs avoided: $JOBS_AVOIDED"
+            echo "- Fail-safe activated: $FAIL_SAFE"
+          } >> "$GITHUB_STEP_SUMMARY"

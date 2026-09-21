@@ -1,0 +1,3 @@
+# Diagnostic fixture: the selected base SHA may be unavailable after a shallow checkout.
+- uses: actions/checkout@v7
+- run: git diff --name-only "$BASE_SHA" "$HEAD_SHA"

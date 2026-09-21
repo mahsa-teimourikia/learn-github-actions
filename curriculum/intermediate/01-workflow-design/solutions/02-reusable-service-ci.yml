@@ -1,0 +1,73 @@
+name: Reusable service CI v1
+
+on:
+  workflow_call:
+    inputs:
+      contract-version:
+        description: Reusable workflow interface version
+        required: true
+        type: string
+      fixture-root:
+        description: Root directory containing package-lock.json
+        required: true
+        type: string
+      service:
+        description: Allowlisted service identifier
+        required: true
+        type: string
+      service-directory:
+        description: Repository-relative service directory for cache identity
+        required: true
+        type: string
+    outputs:
+      report-name:
+        description: Name of the uploaded service report
+        value: ${{ jobs.test.outputs.report-name }}
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test ${{ inputs.service }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      report-name: ${{ steps.report.outputs.name }}
+    steps:
+      - name: Validate the v1 contract
+        env:
+          CONTRACT_VERSION: ${{ inputs.contract-version }}
+          SERVICE: ${{ inputs.service }}
+        run: |
+          test "$CONTRACT_VERSION" = "v1"
+          case "$SERVICE" in
+            catalog|checkout|notifications) ;;
+            *) echo "Unsupported service: $SERVICE" >&2; exit 1 ;;
+          esac
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install the fixture
+        working-directory: ${{ inputs.fixture-root }}
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run service tests
+        working-directory: ${{ inputs.fixture-root }}
+        env:
+          SERVICE: ${{ inputs.service }}
+        run: npm run test:service
+      - name: Name the report
+        id: report
+        env:
+          SERVICE: ${{ inputs.service }}
+        run: echo "name=service-report-$SERVICE-$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: service-report-${{ inputs.service }}-${{ github.sha }}
+          path: ${{ inputs.fixture-root }}/reports/${{ inputs.service }}.json
+          if-no-files-found: error
+          retention-days: 7

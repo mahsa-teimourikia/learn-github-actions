@@ -1,0 +1,15 @@
+{
+  "name": "northstar-monorepo-ci-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test",
+    "plan": "node scripts/plan-changes.mjs",
+    "evaluate": "node scripts/evaluate-planner.mjs",
+    "test:service": "node scripts/run-service-tests.mjs"
+  }
+}

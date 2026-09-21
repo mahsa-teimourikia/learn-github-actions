@@ -1,0 +1,31 @@
+{
+  "services": {
+    "catalog": {
+      "directory": "services/catalog",
+      "dependsOn": ["shared"],
+      "estimatedMinutes": 3.2
+    },
+    "checkout": {
+      "directory": "services/checkout",
+      "dependsOn": ["catalog", "shared"],
+      "estimatedMinutes": 4.6
+    },
+    "notifications": {
+      "directory": "services/notifications",
+      "dependsOn": ["shared"],
+      "estimatedMinutes": 2.5
+    }
+  },
+  "libraries": {
+    "shared": {
+      "directory": "packages/shared"
+    }
+  },
+  "globalPaths": [
+    ".github/workflows/",
+    "package.json",
+    "package-lock.json",
+    "service-graph.json"
+  ],
+  "ignoredPaths": ["docs/", "README.md"]
+}

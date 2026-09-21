@@ -18,15 +18,15 @@ Use `pull_request`, keep permissions read-only, install from a lockfile, upload 
 
 ## Matrix testing
 
-Document supported runtimes and operating systems, use `fail-fast: false` when all failures are useful, use `include` for exceptional combinations, cap `max-parallel`, and avoid dimensions that multiply without improving coverage. See [`matrix-ci.yml`](../01-workflow-design/matrix-ci.yml).
+Document supported runtimes and operating systems, use `fail-fast: false` when all failures are useful, use `include` for exceptional combinations, cap `max-parallel`, and avoid dimensions that multiply without improving coverage. See the [baseline monorepo matrix](../01-workflow-design/exercises/01-baseline-monorepo-ci.yml).
 
 ## Monorepo path filtering
 
-Include shared configuration in each service's path list. Document which workflow owns each package, and remember that path filters are not a security boundary. See [`path-filtered-ci.yml`](../01-workflow-design/path-filtered-ci.yml).
+Include shared configuration in each service's impact model. Document which workflow owns each package, and remember that path filters are not a security boundary. See [the change-detection design](../01-workflow-design/README.md#internal-mechanics-of-change-detection).
 
 ## Reusable organization workflow
 
-Define typed inputs and secrets, keep the interface backwards-compatible, document permissions and outputs, pin the called workflow, and make the caller responsible for repository-specific paths. See [`reusable-ci.yml`](../01-workflow-design/reusable-ci.yml) and [`call-reusable-ci.yml`](../01-workflow-design/call-reusable-ci.yml).
+Define typed inputs and secrets, keep the interface backwards-compatible, document permissions and outputs, pin the called workflow, and make the caller responsible for repository-specific paths. See the [reusable service contract](../01-workflow-design/solutions/02-reusable-service-ci.yml) and [selective caller](../01-workflow-design/solutions/01-selective-monorepo-ci.yml).
 
 ## Build once, promote many times
 

@@ -1,0 +1,55 @@
+name: Validate workflow design course
+
+on:
+  pull_request:
+    paths:
+      - "curriculum/intermediate/01-workflow-design/**"
+      - "tests/test_workflow_design.py"
+      - ".github/workflows/validate-workflow-design-course.yml"
+  push:
+    branches: [main]
+    paths:
+      - "curriculum/intermediate/01-workflow-design/**"
+      - "tests/test_workflow_design.py"
+      - ".github/workflows/validate-workflow-design-course.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Validate starter and reference workflows
+        run: |
+          docker run --rm \
+            --volume "$GITHUB_WORKSPACE:/repo" \
+            --workdir /repo \
+            rhysd/actionlint:1.7.12 \
+            -color \
+            -ignore 'could not read reusable workflow file' \
+            curriculum/intermediate/01-workflow-design/exercises/01-baseline-monorepo-ci.yml \
+            curriculum/intermediate/01-workflow-design/solutions/01-selective-monorepo-ci.yml \
+            curriculum/intermediate/01-workflow-design/solutions/02-reusable-service-ci.yml
+
+  fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: curriculum/intermediate/01-workflow-design/monorepo-fixture
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npm run evaluate

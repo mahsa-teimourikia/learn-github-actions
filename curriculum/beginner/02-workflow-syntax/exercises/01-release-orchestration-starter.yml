@@ -1,0 +1,105 @@
+name: Northstar release syntax lab starter
+run-name: Syntax lab for ${{ github.ref_name }} by @${{ github.actor }}
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "curriculum/beginner/02-workflow-syntax/**"
+      - ".github/workflows/lab-workflow-syntax.yml"
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Target environment
+        required: true
+        type: choice
+        options: [staging, production]
+        default: staging
+      dry_run:
+        description: Simulate without an external write
+        required: true
+        type: boolean
+        default: true
+      components_json:
+        description: JSON array containing api, worker, or web
+        required: true
+        type: string
+        default: '["api","worker"]'
+      fail_component:
+        description: Component to fail intentionally
+        required: false
+        type: choice
+        options: [none, api, worker, web]
+        default: none
+
+permissions:
+  contents: read
+
+jobs:
+  plan:
+    name: Create release plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - run: npm test
+      - name: Build a plan safely from event inputs
+        id: release_plan
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment || 'staging' }}
+          DRY_RUN: ${{ github.event_name != 'workflow_dispatch' || inputs.dry_run }}
+          COMPONENTS_JSON: ${{ inputs.components_json || '["api","worker"]' }}
+        run: npm run plan
+
+  validate:
+    name: Validate ${{ matrix.component }} on Node.js ${{ matrix.node }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        component: [api, worker]
+        node: ["22", "24"]
+        exclude:
+          - component: worker
+            node: "22"
+    defaults:
+      run:
+        working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
+        shell: bash
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts
+      - name: Validate component
+        env:
+          COMPONENT: ${{ matrix.component }}
+          NODE_VERSION: ${{ matrix.node }}
+          EXPERIMENTAL: "false"
+          FAIL_COMPONENT: ${{ inputs.fail_component || 'none' }}
+        run: npm run validate:component
+
+  # Exercise 2: expose the plan step's values as job outputs and replace the
+  # hard-coded matrix with fromJSON(needs.plan.outputs.matrix).
+  # Exercise 3: add a Redis service-container integration job.
+  # Exercise 4: add a conditional, non-writing release simulation and an
+  # always-visible summary job.
+  # Exercise 5: add an environment-specific concurrency policy.

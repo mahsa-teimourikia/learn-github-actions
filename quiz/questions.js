@@ -6,7 +6,7 @@ export const questions = [
     options: ["Events can trigger workflows", "Jobs run on runners", "Steps can run commands or actions", "Every job shares one persistent filesystem", "Artifacts can carry files between jobs"],
     correct: [0, 1, 2, 4],
     explanation: "Events make workflows eligible, jobs execute on runners, steps run commands or actions, and artifacts carry files. Jobs should not assume a shared persistent filesystem.",
-    source: { label: "What is GitHub Actions? — The pieces", url: "curriculum/beginner/01-actions-foundations/README.md#the-pieces" },
+    source: { label: "Actions foundations — terminology", url: "curriculum/beginner/01-actions-foundations/README.md#foundations-and-terminology" },
   },
   {
     id: "foundations-events",
@@ -24,7 +24,7 @@ export const questions = [
     options: ["GitHub-hosted runners should be treated as fresh machines", "Jobs should explicitly check out and install what they need", "Self-hosted runners require stronger isolation", "A later job automatically sees the previous job's workspace", "Persistent self-hosted state can expand blast radius"],
     correct: [0, 1, 2, 4],
     explanation: "Hosted runners are disposable and jobs are isolated. Self-hosted runners persist and can reach more infrastructure, so their isolation and cleanup requirements are stronger.",
-    source: { label: "What is GitHub Actions? — Runner", url: "curriculum/beginner/01-actions-foundations/README.md#runner" },
+    source: { label: "Actions foundations — Runner", url: "curriculum/beginner/01-actions-foundations/README.md#runner" },
   },
   {
     id: "syntax-permissions",
@@ -38,10 +38,10 @@ export const questions = [
   {
     id: "syntax-matrix",
     category: "Syntax & Expressions",
-    prompt: "Which are useful matrix strategy controls?",
-    options: ["fail-fast", "max-parallel", "include", "exclude", "A matrix automatically grants secrets to every combination"],
-    correct: [0, 1, 2, 3],
-    explanation: "fail-fast, max-parallel, include, and exclude control matrix fan-out. A matrix does not change the workflow's secret or permission model.",
+    prompt: "Which statements about a dynamic matrix are correct?",
+    options: ["A consumer needs an explicit needs edge to read a producer job output", "fromJSON can convert a validated JSON output into matrix data", "max-parallel can bound simultaneous children", "User input should be allowed to select any runner label", "include and exclude adjust expanded combinations"],
+    correct: [0, 1, 2, 4],
+    explanation: "Job outputs require an explicit dependency, fromJSON creates the structured value, and matrix controls bound or adjust expansion. Untrusted input must not select arbitrary runners or unbounded axes.",
     source: { label: "Workflow syntax — Matrix strategies", url: "curriculum/beginner/02-workflow-syntax/README.md#matrix-strategies" },
   },
   {

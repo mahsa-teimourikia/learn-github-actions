@@ -102,8 +102,8 @@ Common gaps across the current six lessons:
 | Order | Course | Status |
 | --- | --- | --- |
 | 1 | Actions foundations | Completed and validated |
-| 2 | Workflow syntax | Next |
-| 3 | Workflow design | Planned |
+| 2 | Workflow syntax | Completed and validated |
+| 3 | Workflow design | Next |
 | 4 | Deployment patterns | Planned |
 | 5 | Security and reliability | Planned |
 | 6 | Debugging and operations | Planned |

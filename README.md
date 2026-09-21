@@ -46,7 +46,7 @@ The previous parallel `docs/` and `examples/` trees have been consolidated. Less
 
 ## Run locally
 
-Requirements: Python 3.11 or newer, Node.js 22 or newer, and GNU Make.
+Requirements: Python 3.11 or newer, Node.js 24 or newer, and GNU Make.
 
 ```bash
 make test

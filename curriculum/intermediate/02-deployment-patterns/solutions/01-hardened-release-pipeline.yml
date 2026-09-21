@@ -1,0 +1,267 @@
+name: Lab - hardened release pipeline
+run-name: Release ${{ inputs.release_version || github.ref_name }} by @${{ github.actor }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: Semantic release version
+        required: true
+        type: string
+        default: v1.0.0
+      deploy_production:
+        description: Run the protected mock production stage
+        required: true
+        type: boolean
+        default: false
+      failure_mode:
+        description: Inject a production write outcome
+        required: true
+        type: choice
+        options: [none, before-write, after-write]
+        default: none
+      canary_mode:
+        description: Select deterministic canary signals
+        required: true
+        type: choice
+        options: [healthy, unhealthy]
+        default: healthy
+  push:
+    tags: ["v*.*.*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build immutable release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      digest: ${{ steps.identity.outputs.digest }}
+      version: ${{ steps.identity.outputs.version }}
+      commit: ${{ steps.identity.outputs.commit }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install and test the fixture
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+      - name: Build once
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          RELEASE_VERSION: ${{ inputs.release_version || github.ref_name }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: npm run build
+      - name: Export release identity
+        id: identity
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        run: npm run manifest:outputs
+      - uses: actions/upload-artifact@v7
+        with:
+          name: northstar-release-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  verify:
+    name: Verify on a fresh runner
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: northstar-release-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/dist/
+      - name: Verify digest, version, and commit
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
+          EXPECTED_VERSION: ${{ needs.build.outputs.version }}
+          EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run verify
+
+  staging:
+    name: Deploy and evaluate staging
+    needs: [build, verify]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: lab-staging
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: northstar-release-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/dist/
+      - name: Verify the promoted release
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
+          EXPECTED_VERSION: ${{ needs.build.outputs.version }}
+          EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run verify
+      - name: Seed and deploy to staging mock
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: staging
+          IDEMPOTENCY_KEY: deploy:${{ needs.build.outputs.version }}:${{ github.sha }}
+        run: |
+          npm run seed
+          npm run deploy
+      - name: Evaluate staging signals
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          HEALTH_MODE: healthy
+        run: npm run health
+
+  production:
+    name: Protected mock production
+    if: ${{ github.event_name == 'push' || inputs.deploy_production }}
+    needs: [build, verify, staging]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: lab-production
+    concurrency:
+      group: deploy-lab-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - uses: actions/download-artifact@v8
+        with:
+          name: northstar-release-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/dist/
+      - name: Install and verify the exact promoted release
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
+          EXPECTED_VERSION: ${{ needs.build.outputs.version }}
+          EXPECTED_COMMIT: ${{ needs.build.outputs.commit }}
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run verify
+      - name: Generate the expected OIDC trust contract
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          REPOSITORY_ID: ${{ github.repository_id }}
+          REPOSITORY_OWNER_ID: ${{ github.repository_owner_id }}
+          TARGET_ENVIRONMENT: lab-production
+          JOB_WORKFLOW_REF: ${{ github.workflow_ref }}
+          OIDC_AUDIENCE: https://cloud.example.com
+        run: npm run identity:contract
+      - uses: actions/upload-artifact@v7
+        with:
+          name: oidc-trust-contract-${{ github.sha }}
+          path: curriculum/intermediate/02-deployment-patterns/release-fixture/reports/oidc-trust-contract.json
+          if-no-files-found: error
+          retention-days: 7
+      - name: Seed the production mock
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: lab-production
+        run: npm run seed
+      - name: Attempt one deployment
+        id: deploy
+        continue-on-error: true
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: lab-production
+          IDEMPOTENCY_KEY: deploy:${{ needs.build.outputs.version }}:${{ github.sha }}
+          FAILURE_MODE: ${{ inputs.failure_mode || 'none' }}
+        run: npm run deploy
+      - name: Reconcile an uncertain outcome
+        id: reconcile
+        if: ${{ steps.deploy.outcome == 'failure' }}
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: lab-production
+          IDEMPOTENCY_KEY: deploy:${{ needs.build.outputs.version }}:${{ github.sha }}
+        run: npm run reconcile
+      - name: Retry only a proven pre-write failure
+        id: retry
+        if: ${{ steps.reconcile.outputs.safe_to_retry == 'true' }}
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: lab-production
+          IDEMPOTENCY_KEY: deploy:${{ needs.build.outputs.version }}:${{ github.sha }}
+          FAILURE_MODE: none
+        run: npm run deploy
+      - name: Enforce the deployment outcome
+        id: deployment_gate
+        if: ${{ always() && !cancelled() }}
+        env:
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          RECONCILIATION: ${{ steps.reconcile.outputs.resolution }}
+          RETRY_OUTCOME: ${{ steps.retry.outcome }}
+        run: |
+          if [[ "$DEPLOY_OUTCOME" == "success" ]]; then
+            exit 0
+          fi
+          if [[ "$RECONCILIATION" == "applied" ]]; then
+            exit 0
+          fi
+          if [[ "$RECONCILIATION" == "not-applied" && "$RETRY_OUTCOME" == "success" ]]; then
+            exit 0
+          fi
+          echo "Deployment outcome is unresolved" >&2
+          exit 1
+      - name: Evaluate canary signals
+        id: canary
+        continue-on-error: true
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          HEALTH_MODE: ${{ inputs.canary_mode || 'healthy' }}
+        run: npm run health
+      - name: Roll back an unhealthy canary
+        id: rollback
+        if: ${{ steps.canary.outcome == 'failure' }}
+        working-directory: curriculum/intermediate/02-deployment-patterns/release-fixture
+        env:
+          TARGET_ENVIRONMENT: lab-production
+          EXPECTED_CURRENT_DIGEST: ${{ needs.build.outputs.digest }}
+          ROLLBACK_REASON: canary gate failed
+        run: npm run rollback
+      - name: Enforce canary and rollback evidence
+        if: ${{ always() && !cancelled() }}
+        env:
+          DEPLOYMENT_GATE: ${{ steps.deployment_gate.outcome }}
+          CANARY_OUTCOME: ${{ steps.canary.outcome }}
+          ROLLBACK_OUTCOME: ${{ steps.rollback.outcome }}
+        run: |
+          test "$DEPLOYMENT_GATE" = "success"
+          if [[ "$CANARY_OUTCOME" == "failure" ]]; then
+            test "$ROLLBACK_OUTCOME" = "success"
+            echo "Canary failed; rollback completed" >&2
+            exit 1
+          fi
+          test "$CANARY_OUTCOME" = "success"

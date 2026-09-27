@@ -24,10 +24,10 @@ export const lessons = [
   },
   {
     id: "i2-deployment", level: "intermediate", step: "02", title: "Deployment patterns",
-    summary: "Build once, promote an immutable artifact, protect production with environments, and use constrained OIDC trust.",
-    outcomes: ["Separate build and deploy permissions", "Promote the tested artifact", "Reconcile uncertain writes before retry"],
-    readme: "curriculum/intermediate/02-deployment-patterns/README.md", labGuide: "curriculum/intermediate/02-deployment-patterns/README.md", starter: "curriculum/intermediate/02-deployment-patterns/build-and-promote.yml", solution: "curriculum/intermediate/02-deployment-patterns/environment-deployment.yml",
-    checkpoint: { question: "A release call times out and external state is unknown. What happens next?", options: ["Retry immediately", "Rebuild and deploy", "Reconcile external state before retry"], answer: 2, explanation: "A timeout does not prove the write failed. Verify target state before attempting a potentially duplicate side effect." }
+    summary: "Promote one verified digest through protected environments, reconcile uncertain writes, evaluate canary evidence, and roll back without hiding failure.",
+    outcomes: ["Bind source, release, artifact, and deployment identities", "Constrain environments and OIDC trust before granting authority", "Reconcile timeouts and use compare-and-swap rollback"],
+    readme: "curriculum/intermediate/02-deployment-patterns/README.md", labGuide: "curriculum/intermediate/02-deployment-patterns/exercises/README.md", starter: "curriculum/intermediate/02-deployment-patterns/exercises/01-release-pipeline-starter.yml", solution: "curriculum/intermediate/02-deployment-patterns/solutions/01-hardened-release-pipeline.yml",
+    checkpoint: { question: "The deploy request times out after the target may have applied the digest. What is the safe next action?", options: ["Rebuild and deploy a new artifact", "Retry immediately with a new key", "Query authoritative target state using the same deployment identity"], answer: 2, explanation: "A timeout is ambiguous. Reconcile the idempotency key and digest first; retry only when the target proves the write did not occur." }
   },
   {
     id: "a1-security", level: "advanced", step: "01", title: "Security and reliability",

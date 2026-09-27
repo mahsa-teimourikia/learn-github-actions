@@ -1,0 +1,4 @@
+# Diagnostic anti-pattern: a timeout does not prove the external write failed.
+- name: Retry deployment blindly
+  run: |
+    deploy --release "$RELEASE_DIGEST" || deploy --release "$RELEASE_DIGEST"

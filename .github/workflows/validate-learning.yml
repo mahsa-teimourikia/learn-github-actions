@@ -19,6 +19,6 @@ jobs:
           python-version: "3.11"
       - uses: actions/setup-node@v7
         with:
-          node-version: 22
+          node-version: 24
       - name: Validate curriculum, workflow labs, links, Hub, and quiz
         run: npm test

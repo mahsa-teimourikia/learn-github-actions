@@ -119,11 +119,11 @@ export const questions = [
   {
     id: "deploy-environment",
     category: "Deployment",
-    prompt: "Which controls belong on a production deployment?",
-    options: ["A protected GitHub environment", "Required reviewers or branch restrictions", "A concurrency group for the production resource", "Production credentials in every pull-request job", "A clear rollback or cancellation policy"],
+    prompt: "Which controls make an uncertain or unhealthy production deployment recoverable?",
+    options: ["A stable idempotency key bound to the digest", "Authoritative state reconciliation before retry", "Compare-and-swap rollback", "Turning the workflow green after rollback", "A concurrency policy shared by every mutating workflow"],
     correct: [0, 1, 2, 4],
-    explanation: "Environments, review rules, concurrency, and rollback policy protect production. Pull-request test jobs should not receive production credentials.",
-    source: { label: "Security — Environments", url: "curriculum/advanced/01-security-and-reliability/README.md#environments" },
+    explanation: "Deployment safety requires deduplication, reconciliation, serialization, and rollback that cannot overwrite a newer state. A successful rollback mitigates impact but should not hide the failed release.",
+    source: { label: "Deployment patterns — Idempotency and uncertain writes", url: "curriculum/intermediate/02-deployment-patterns/README.md#idempotency-and-uncertain-writes" },
   },
   {
     id: "deploy-oidc",
@@ -132,7 +132,7 @@ export const questions = [
     options: ["The job needs id-token: write", "Cloud trust should restrict repository and branch/environment claims", "OIDC can avoid long-lived cloud keys", "The workflow should print the identity token for debugging", "The permission can be limited to the deploy job"],
     correct: [0, 1, 2, 4],
     explanation: "OIDC uses a short-lived token, requires id-token: write, and should be constrained by cloud trust conditions. Tokens must never be printed.",
-    source: { label: "Scenario cookbook — Cloud deployment with OIDC", url: "curriculum/intermediate/02-deployment-patterns/README.md#cloud-deployment-with-oidc" },
+    source: { label: "Deployment patterns — Cloud deployment with OIDC", url: "curriculum/intermediate/02-deployment-patterns/README.md#cloud-deployment-with-oidc" },
   },
   {
     id: "security-forks",

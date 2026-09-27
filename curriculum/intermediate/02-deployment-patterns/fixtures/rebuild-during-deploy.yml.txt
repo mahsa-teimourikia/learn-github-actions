@@ -1,0 +1,6 @@
+# Diagnostic anti-pattern: production receives bytes that staging never tested.
+- name: Rebuild in production
+  run: |
+    npm ci
+    npm run build
+    ./deploy dist/

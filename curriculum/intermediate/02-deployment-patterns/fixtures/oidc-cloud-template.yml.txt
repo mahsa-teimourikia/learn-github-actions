@@ -1,0 +1,15 @@
+# Review and pin the provider's official action before adapting this template.
+permissions:
+  contents: read
+  id-token: write
+
+environment: production
+
+steps:
+  - name: Exchange GitHub identity for a short-lived cloud credential
+    uses: CLOUD-PROVIDER/OFFICIAL-LOGIN-ACTION@FULL_COMMIT_SHA
+    with:
+      audience: EXPECTED_AUDIENCE
+      role: LEAST_PRIVILEGED_DEPLOY_ROLE
+  - name: Deploy an already verified digest
+    run: provider-cli deploy --digest "$RELEASE_DIGEST"

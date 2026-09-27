@@ -1,0 +1,36 @@
+{
+  "actionlintVersion": "1.7.12",
+  "cases": [
+    {
+      "file": "fixtures/01-schema-trigger.yml.txt",
+      "expectedKinds": ["syntax-check"],
+      "objective": "Distinguish valid YAML from the GitHub Actions workflow schema."
+    },
+    {
+      "file": "fixtures/02-expression-context.yml.txt",
+      "expectedKinds": ["expression"],
+      "objective": "Use the matrix object's inferred shape instead of an undefined property."
+    },
+    {
+      "file": "fixtures/03-job-dependency.yml.txt",
+      "expectedKinds": ["job-needs"],
+      "objective": "Make every job dependency refer to an existing job identifier."
+    },
+    {
+      "file": "fixtures/04-matrix-exclusion.yml.txt",
+      "expectedKinds": ["matrix"],
+      "objective": "Keep matrix exclusions inside the declared value space."
+    },
+    {
+      "file": "fixtures/05-action-input.yml.txt",
+      "expectedKinds": ["action"],
+      "objective": "Validate common action inputs before a runner downloads the action."
+    },
+    {
+      "file": "fixtures/06-untrusted-scripts.yml.txt",
+      "expectedKinds": ["expression"],
+      "objective": "Separate untrusted event data from generated shell source."
+    }
+  ],
+  "solution": "solutions/02-actionlint-clean.yml"
+}

@@ -1,0 +1,20 @@
+# REVIEW ONLY — direct interpolation changes the generated shell program.
+name: Broken script boundaries
+on:
+  issues:
+    types: [opened]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Unsafe shell interpolation
+        run: echo "${{ github.event.issue.title }}"
+      - name: ShellCheck experiment
+        env:
+          FILES: "one two"
+        run: for file in $FILES; do echo $file; done
+      - name: Pyflakes experiment
+        shell: python
+        run: print(undefined_name)

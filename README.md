@@ -77,6 +77,7 @@ Then open `http://localhost:8000`.
 
 - [Event and execution model](curriculum/beginner/01-actions-foundations/README.md)
 - [Workflow syntax reference](curriculum/beginner/02-workflow-syntax/README.md)
+- [Local `actionlint` diagnostic workshop](curriculum/beginner/02-workflow-syntax/actionlint-workshop/README.md)
 - [Cache, artifact, matrix, and reuse decisions](curriculum/intermediate/01-workflow-design/README.md)
 - [Scenario and deployment cookbook](curriculum/intermediate/02-deployment-patterns/README.md)
 - [Security threat model and workflow-native policy lab](curriculum/advanced/01-security-and-reliability/README.md)

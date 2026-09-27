@@ -1,0 +1,12 @@
+# REVIEW ONLY — `branch` is not a valid push filter key.
+name: Broken trigger schema
+on:
+  push:
+    branch: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "validate"

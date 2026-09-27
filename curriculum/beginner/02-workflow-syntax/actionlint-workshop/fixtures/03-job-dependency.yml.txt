@@ -1,0 +1,15 @@
+# REVIEW ONLY — no job has the identifier `compile`.
+name: Broken job dependency
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "build"
+  package:
+    needs: compile
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "package"

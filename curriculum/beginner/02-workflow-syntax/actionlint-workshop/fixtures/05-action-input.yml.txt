@@ -1,0 +1,12 @@
+# REVIEW ONLY — `messages` is not an input of the lesson-owned local action.
+name: Broken action input
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ./curriculum/beginner/02-workflow-syntax/actionlint-workshop/sample-action
+        with:
+          messages: hello

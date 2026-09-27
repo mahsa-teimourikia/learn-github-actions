@@ -1,0 +1,17 @@
+# REVIEW ONLY — Node 24 cannot be excluded because it is not in the matrix.
+name: Broken matrix exclusion
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        node: [20, 22]
+        os: [ubuntu-latest]
+        exclude:
+          - node: 24
+            os: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - run: echo "Node ${{ matrix.node }}"

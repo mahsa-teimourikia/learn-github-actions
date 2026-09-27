@@ -1,0 +1,13 @@
+name: Workshop message
+description: Minimal local action used to teach action-input validation.
+inputs:
+  message:
+    description: Message to print.
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        MESSAGE: ${{ inputs.message }}
+      run: printf '%s\n' "$MESSAGE"

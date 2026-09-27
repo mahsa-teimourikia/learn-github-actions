@@ -188,3 +188,8 @@ Keep links to at least:
 - one experimental failure;
 - one release-eligible simulation; and
 - your expected-versus-observed evaluation table.
+
+After the runtime lab, complete the
+[`actionlint` diagnostic workshop](../actionlint-workshop/README.md) to catch
+schema, expression, graph, matrix, action-interface, and script-boundary defects
+before a workflow run exists.

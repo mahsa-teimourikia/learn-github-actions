@@ -1,0 +1,16 @@
+# REVIEW ONLY — repeated failures create duplicate issues without deduplication.
+name: Duplicate failure notifications
+on:
+  schedule:
+    - cron: "0 * * * *"
+permissions:
+  issues: write
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./maintenance.sh
+      - if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Maintenance failed" --body "Inspect the latest run"

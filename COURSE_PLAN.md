@@ -106,4 +106,8 @@ Common gaps across the current six lessons:
 | 3 | Workflow design | Completed and validated |
 | 4 | Deployment patterns | Completed and validated |
 | 5 | Security and reliability | Completed and validated |
-| 6 | Debugging and operations | Next |
+| 6 | Debugging and operations | Completed and validated |
+
+All six vertical course reviews are complete. Each lesson now includes a deep
+technical chapter, a workflow-native practical path, current references,
+lesson-owned validation, Hub integration, and quiz coverage.

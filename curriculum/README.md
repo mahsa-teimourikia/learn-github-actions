@@ -19,7 +19,7 @@ Every lesson owns its technical chapter and the workflow labs it teaches. Learne
 | Intermediate | [01 — Workflow design](intermediate/01-workflow-design/README.md) | How do we reuse, fan out, filter, and transfer data safely? | Four workflow patterns |
 | Intermediate | [02 — Deployment patterns](intermediate/02-deployment-patterns/README.md) | How do we build once and promote with bounded side effects? | Five deployment/release workflows |
 | Advanced | [01 — Security and reliability](advanced/01-security-and-reliability/README.md) | How do we prove that untrusted input cannot reach privileged execution or persistent state? | [Workflow lab](advanced/01-security-and-reliability/exercises/README.md) · [Starter](advanced/01-security-and-reliability/exercises/01-security-gate-starter.yml) · [Solution](advanced/01-security-and-reliability/solutions/01-hardened-security-gate.yml) · [Security fixture](advanced/01-security-and-reliability/security-fixture/) |
-| Advanced | [02 — Debugging and operations](advanced/02-debugging-and-operations/README.md) | How do we diagnose, observe, recover, and learn from failures? | [Scheduled-maintenance workflow](advanced/02-debugging-and-operations/scheduled-maintenance.yml) |
+| Advanced | [02 — Debugging and operations](advanced/02-debugging-and-operations/README.md) | How do we diagnose, observe, recover, measure, and learn from workflow failures? | [Workflow lab](advanced/02-debugging-and-operations/exercises/README.md) · [Starter](advanced/02-debugging-and-operations/exercises/01-incident-operations-starter.yml) · [Solution](advanced/02-debugging-and-operations/solutions/01-evidence-led-operations.yml) · [Operations fixture](advanced/02-debugging-and-operations/operations-fixture/) |
 
 ## How to study a lesson
 

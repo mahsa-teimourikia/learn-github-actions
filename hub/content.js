@@ -38,9 +38,9 @@ export const lessons = [
   },
   {
     id: "a2-operations", level: "advanced", step: "02", title: "Debugging and operations",
-    summary: "Investigate failures from evidence, capture useful telemetry, define rerun policy, and respond to workflow security incidents.",
-    outcomes: ["Start from run identity and the first failed step", "Classify deterministic, flaky, permission, and external failures", "Preserve evidence and recover safely"],
-    readme: "curriculum/advanced/02-debugging-and-operations/README.md", labGuide: "curriculum/advanced/02-debugging-and-operations/README.md", starter: "curriculum/advanced/02-debugging-and-operations/scheduled-maintenance.yml", solution: "curriculum/advanced/02-debugging-and-operations/scheduled-maintenance.yml",
-    checkpoint: { question: "What should an investigation inspect before the final cascade of errors?", options: ["The first failed step", "Only the summary", "Every secret value"], answer: 0, explanation: "Later failures are often consequences. Start with run identity and the earliest failing step without exposing secrets." }
+    summary: "Operate workflows as production systems: trace attempts, preserve structured evidence, reconcile uncertain writes, measure SLOs and cost, and learn from incidents.",
+    outcomes: ["Trace run, attempt, job, step, artifact, and external-state identities", "Classify and recover from deterministic, transient, uncertain, and flaky failures", "Measure delivery, success, latency, retries, critical path, cost, and error-budget burn"],
+    readme: "curriculum/advanced/02-debugging-and-operations/README.md", labGuide: "curriculum/advanced/02-debugging-and-operations/exercises/README.md", starter: "curriculum/advanced/02-debugging-and-operations/exercises/01-incident-operations-starter.yml", solution: "curriculum/advanced/02-debugging-and-operations/solutions/01-evidence-led-operations.yml",
+    checkpoint: { question: "A maintenance request times out after the provider may have applied it. What should the workflow do before any retry?", options: ["Create a new operation key and rerun", "Query authoritative target state with the same idempotency key", "Assume timeout means the write failed"], answer: 1, explanation: "A timeout leaves the write state uncertain. Reconcile the original operation identity against authoritative state and retry only when absence is proven." }
   }
 ].map((lesson) => ({ ...lesson, links: { readme: repo + lesson.readme, labGuide: repo + lesson.labGuide, starter: repo + lesson.starter, solution: repo + lesson.solution } }));

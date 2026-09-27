@@ -1,0 +1,12 @@
+# REVIEW ONLY — moving runner and tool inputs weaken reproducibility.
+name: Runner and tool drift
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - run: npm install --global diagnostic-tool@latest
+      - run: diagnostic-tool inspect

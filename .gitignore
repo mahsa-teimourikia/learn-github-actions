@@ -6,3 +6,5 @@ node_modules/
 .DS_Store
 site/
 curriculum/advanced/01-security-and-reliability/security-fixture/reports/
+curriculum/advanced/02-debugging-and-operations/operations-fixture/reports/
+curriculum/advanced/02-debugging-and-operations/operations-fixture/.state/

@@ -1,0 +1,62 @@
+{
+  "expectedSchedules": 12,
+  "observedSchedules": 9,
+  "slo": {
+    "scheduleDelivery": 0.95,
+    "terminalSuccess": 0.9,
+    "queueP95Seconds": 300,
+    "durationP95Seconds": 1200
+  },
+  "runs": [
+    {
+      "id": 4101, "logicalId": "maintenance-01", "attempt": 1, "headSha": "1111111111111111111111111111111111111111", "conclusion": "success",
+      "createdAt": "2026-09-01T03:17:00Z", "startedAt": "2026-09-01T03:18:00Z", "completedAt": "2026-09-01T03:23:00Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 240, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4102, "logicalId": "maintenance-02", "attempt": 1, "headSha": "2222222222222222222222222222222222222222", "conclusion": "success",
+      "createdAt": "2026-09-02T03:17:00Z", "startedAt": "2026-09-02T03:19:00Z", "completedAt": "2026-09-02T03:25:00Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 300, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4103, "logicalId": "maintenance-03", "attempt": 1, "headSha": "3333333333333333333333333333333333333333", "conclusion": "failure",
+      "createdAt": "2026-09-03T03:17:00Z", "startedAt": "2026-09-03T03:17:30Z", "completedAt": "2026-09-03T03:21:30Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 180, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4103, "logicalId": "maintenance-03", "attempt": 2, "headSha": "3333333333333333333333333333333333333333", "conclusion": "success",
+      "createdAt": "2026-09-03T04:00:00Z", "startedAt": "2026-09-03T04:10:00Z", "completedAt": "2026-09-03T04:15:00Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 240, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4104, "logicalId": "maintenance-04", "attempt": 1, "headSha": "4444444444444444444444444444444444444444", "conclusion": "success",
+      "createdAt": "2026-09-04T03:17:00Z", "startedAt": "2026-09-04T03:18:30Z", "completedAt": "2026-09-04T03:26:30Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 420, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4105, "logicalId": "maintenance-05", "attempt": 1, "headSha": "5555555555555555555555555555555555555555", "conclusion": "cancelled",
+      "createdAt": "2026-09-05T03:17:00Z", "startedAt": "2026-09-05T03:17:45Z", "completedAt": "2026-09-05T03:19:45Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 60, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4106, "logicalId": "maintenance-06", "attempt": 1, "headSha": "6666666666666666666666666666666666666666", "conclusion": "failure",
+      "createdAt": "2026-09-06T03:17:00Z", "startedAt": "2026-09-06T03:22:00Z", "completedAt": "2026-09-06T03:42:00Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 1140, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4107, "logicalId": "maintenance-07", "attempt": 1, "headSha": "7777777777777777777777777777777777777777", "conclusion": "success",
+      "createdAt": "2026-09-07T03:17:00Z", "startedAt": "2026-09-07T03:18:00Z", "completedAt": "2026-09-07T03:25:00Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 360, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4108, "logicalId": "maintenance-08", "attempt": 1, "headSha": "8888888888888888888888888888888888888888", "conclusion": "success",
+      "createdAt": "2026-09-08T03:17:00Z", "startedAt": "2026-09-08T03:20:00Z", "completedAt": "2026-09-08T03:30:00Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 540, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    },
+    {
+      "id": 4109, "logicalId": "maintenance-09", "attempt": 1, "headSha": "9999999999999999999999999999999999999999", "conclusion": "success",
+      "createdAt": "2026-09-09T03:17:00Z", "startedAt": "2026-09-09T03:17:30Z", "completedAt": "2026-09-09T03:26:30Z",
+      "jobs": [{"name": "prepare", "durationSeconds": 30}, {"name": "maintenance", "durationSeconds": 480, "needs": ["prepare"]}, {"name": "evidence", "durationSeconds": 30, "needs": ["maintenance"]}]
+    }
+  ]
+}

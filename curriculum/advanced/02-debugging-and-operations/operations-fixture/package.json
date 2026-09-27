@@ -1,0 +1,17 @@
+{
+  "name": "northstar-actions-operations-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=24"},
+  "scripts": {
+    "test": "node --test",
+    "operate": "node scripts/run-maintenance.mjs",
+    "reconcile": "node scripts/reconcile-operation.mjs",
+    "classify": "node scripts/classify-outcome.mjs",
+    "enforce": "node scripts/enforce-outcome.mjs",
+    "metrics": "node scripts/evaluate-history.mjs",
+    "timeline": "node scripts/build-incident-timeline.mjs",
+    "evaluate": "npm run metrics && npm run timeline"
+  }
+}

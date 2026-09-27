@@ -76,6 +76,14 @@ def validate_workflows() -> None:
     assert len(list((security / "fixtures/vulnerable").glob("*.yml.txt"))) == 6
     assert not list((security / "fixtures/vulnerable").glob("*.yml"))
 
+    operations = ROOT / "curriculum/advanced/02-debugging-and-operations"
+    assert (operations / "exercises/README.md").exists()
+    assert (operations / "exercises/01-incident-operations-starter.yml").exists()
+    assert (operations / "solutions/01-evidence-led-operations.yml").exists()
+    assert (operations / "operations-fixture/package-lock.json").exists()
+    assert len(list((operations / "fixtures").glob("*.yml.txt"))) == 5
+    assert not list((operations / "fixtures").glob("*.yml"))
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()

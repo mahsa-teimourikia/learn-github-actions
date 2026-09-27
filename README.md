@@ -23,7 +23,7 @@ Prefer repository navigation? Open the [curriculum index](curriculum/README.md) 
 | Intermediate | [Workflow design](curriculum/intermediate/01-workflow-design/README.md) | Choose reuse boundaries, control fan-out, and make data movement explicit |
 | Intermediate | [Deployment patterns](curriculum/intermediate/02-deployment-patterns/README.md) | Build once, promote immutably, protect environments, and use OIDC |
 | Advanced | [Security and reliability](curriculum/advanced/01-security-and-reliability/README.md) | Close attack paths across events, expressions, dependencies, state, credentials, runners, and failure recovery |
-| Advanced | [Debugging and operations](curriculum/advanced/02-debugging-and-operations/README.md) | Investigate failures, preserve evidence, observe runs, and recover safely |
+| Advanced | [Debugging and operations](curriculum/advanced/02-debugging-and-operations/README.md) | Trace attempts, classify failures, reconcile uncertainty, measure workflow health and cost, and learn from incidents |
 
 See the [course improvement plan](COURSE_PLAN.md) for the evidence-based lesson review sequence and [ROADMAP.md](ROADMAP.md) for longer-term additions.
 
@@ -80,7 +80,7 @@ Then open `http://localhost:8000`.
 - [Cache, artifact, matrix, and reuse decisions](curriculum/intermediate/01-workflow-design/README.md)
 - [Scenario and deployment cookbook](curriculum/intermediate/02-deployment-patterns/README.md)
 - [Security threat model and workflow-native policy lab](curriculum/advanced/01-security-and-reliability/README.md)
-- [Failure triage and incident response](curriculum/advanced/02-debugging-and-operations/README.md)
+- [Failure triage, workflow operations, and incident lab](curriculum/advanced/02-debugging-and-operations/exercises/README.md)
 
 ## Official references
 

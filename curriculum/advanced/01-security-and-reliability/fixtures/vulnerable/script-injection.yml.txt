@@ -1,0 +1,14 @@
+# REVIEW ONLY — never install this workflow.
+name: Vulnerable title check
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Reviewing ${{ github.event.pull_request.title }}"

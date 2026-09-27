@@ -1,0 +1,49 @@
+name: Lab - security review baseline
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/**"
+      - "curriculum/advanced/01-security-and-reliability/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: security-baseline-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deterministic-review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install without lifecycle scripts
+        working-directory: curriculum/advanced/01-security-and-reliability/security-fixture
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Run policy unit tests
+        working-directory: curriculum/advanced/01-security-and-reliability/security-fixture
+        run: npm test
+      - name: Evaluate labeled attack paths and authorization cases
+        working-directory: curriculum/advanced/01-security-and-reliability/security-fixture
+        run: npm run evaluate
+
+  required-security:
+    name: Required security
+    if: ${{ always() && !cancelled() }}
+    needs: deterministic-review
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Enforce the baseline result
+        env:
+          REVIEW_RESULT: ${{ needs.deterministic-review.result }}
+        run: test "$REVIEW_RESULT" = "success"

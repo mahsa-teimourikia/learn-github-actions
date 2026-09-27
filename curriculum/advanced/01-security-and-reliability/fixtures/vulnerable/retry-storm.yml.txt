@@ -1,0 +1,19 @@
+# REVIEW ONLY — never install this workflow.
+name: Vulnerable unbounded publisher
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Retry forever after ambiguous failures
+        run: |
+          while true; do
+            ./scripts/publish.sh && break
+            sleep 5
+          done

@@ -105,5 +105,5 @@ Common gaps across the current six lessons:
 | 2 | Workflow syntax | Completed and validated |
 | 3 | Workflow design | Completed and validated |
 | 4 | Deployment patterns | Completed and validated |
-| 5 | Security and reliability | Next |
-| 6 | Debugging and operations | Planned |
+| 5 | Security and reliability | Completed and validated |
+| 6 | Debugging and operations | Next |

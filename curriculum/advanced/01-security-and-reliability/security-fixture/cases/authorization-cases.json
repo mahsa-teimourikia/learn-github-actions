@@ -1,0 +1,47 @@
+[
+  {
+    "id": "fork-pr-read-only-hosted",
+    "request": {"event": "pull_request", "fork": true, "write": false, "secrets": false, "runner": "github-hosted"},
+    "expected": {"allow": true, "reason": "bounded-validation"}
+  },
+  {
+    "id": "fork-pr-write-token",
+    "request": {"event": "pull_request", "fork": true, "write": true, "secrets": false, "runner": "github-hosted"},
+    "expected": {"allow": false, "reason": "untrusted-write"}
+  },
+  {
+    "id": "fork-pr-self-hosted",
+    "request": {"event": "pull_request", "fork": true, "write": false, "secrets": false, "runner": "self-hosted"},
+    "expected": {"allow": false, "reason": "untrusted-self-hosted"}
+  },
+  {
+    "id": "fork-pr-secret",
+    "request": {"event": "pull_request", "fork": true, "write": false, "secrets": true, "runner": "github-hosted"},
+    "expected": {"allow": false, "reason": "untrusted-secret"}
+  },
+  {
+    "id": "protected-tag-release",
+    "request": {"event": "push", "fork": false, "write": true, "secrets": false, "runner": "github-hosted", "environment": "production", "protectedEnvironment": true, "refType": "tag", "artifactVerified": true},
+    "expected": {"allow": true, "reason": "protected-release"}
+  },
+  {
+    "id": "unprotected-production",
+    "request": {"event": "push", "fork": false, "write": true, "secrets": false, "runner": "github-hosted", "environment": "production", "protectedEnvironment": false, "refType": "tag", "artifactVerified": true},
+    "expected": {"allow": false, "reason": "unprotected-production"}
+  },
+  {
+    "id": "branch-production",
+    "request": {"event": "push", "fork": false, "write": true, "secrets": false, "runner": "github-hosted", "environment": "production", "protectedEnvironment": true, "refType": "branch", "artifactVerified": true},
+    "expected": {"allow": false, "reason": "untrusted-release-ref"}
+  },
+  {
+    "id": "unverified-artifact",
+    "request": {"event": "workflow_run", "fork": false, "write": true, "secrets": false, "runner": "github-hosted", "environment": "production", "protectedEnvironment": true, "refType": "tag", "artifactVerified": false},
+    "expected": {"allow": false, "reason": "unverified-artifact"}
+  },
+  {
+    "id": "oidc-audience-mismatch",
+    "request": {"event": "push", "fork": false, "write": true, "secrets": false, "runner": "github-hosted", "environment": "production", "protectedEnvironment": true, "refType": "tag", "artifactVerified": true, "oidc": true, "audience": "https://wrong.example", "expectedAudience": "https://cloud.example"},
+    "expected": {"allow": false, "reason": "oidc-audience-mismatch"}
+  }
+]

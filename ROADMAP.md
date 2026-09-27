@@ -6,7 +6,7 @@
 - Intermediate: reusable design and deployment patterns.
 - Advanced: security, reliability, debugging, and operations.
 - Learning Hub: filtered curriculum map, lesson views, checkpoints, and local progress.
-- Full quiz: eighteen multi-answer questions with explanations and source links.
+- Full quiz: twenty-one multi-answer questions with explanations and source links.
 
 ## Planned depth
 

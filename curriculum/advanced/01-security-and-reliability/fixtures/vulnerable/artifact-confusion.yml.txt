@@ -1,0 +1,18 @@
+# REVIEW ONLY — never install this workflow.
+name: Vulnerable privileged artifact consumer
+on:
+  workflow_run:
+    workflows: [Fork tests]
+    types: [completed]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-candidate
+      - run: bash artifact/publish.sh

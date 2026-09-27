@@ -1,0 +1,15 @@
+# REVIEW ONLY — never install this workflow.
+name: Vulnerable privileged cache writer
+on:
+  pull_request_target:
+
+cache-mode: write
+permissions:
+  contents: read
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: npm ci

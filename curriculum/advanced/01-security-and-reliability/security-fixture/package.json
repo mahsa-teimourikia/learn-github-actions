@@ -1,0 +1,15 @@
+{
+  "name": "northstar-actions-security-fixture",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test",
+    "audit": "node scripts/audit-scenarios.mjs",
+    "authorize": "node scripts/evaluate-authorization.mjs",
+    "evaluate": "npm run audit && npm run authorize"
+  }
+}

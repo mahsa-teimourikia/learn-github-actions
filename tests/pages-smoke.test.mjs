@@ -12,6 +12,10 @@ test("built site contains Hub, lesson registry, brand asset, and quiz", async ()
   await readFile(resolve(root, "site/assets/one-plus-i.png"));
   assert.match(hub, /GitHub Actions Learning Hub/);
   assert.match(hub, /workflow-native labs/);
+  assert.match(hub, /INSTALLATION\.md/);
+  assert.match(hub, /RUN_GUIDE\.md/);
+  assert.match(hub, />Install</);
+  assert.match(hub, />Run guide</);
   assert.equal((content.match(/id: "/g) || []).length, 6);
   assert.doesNotMatch(content, /\.ipynb|lab\.py/);
   assert.match(content, /labGuide:/);

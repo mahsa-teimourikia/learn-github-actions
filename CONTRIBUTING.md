@@ -2,6 +2,10 @@
 
 Thanks for improving Learn GitHub Actions.
 
+Set up the repository with [INSTALLATION.md](INSTALLATION.md) and use
+[RUN_GUIDE.md](RUN_GUIDE.md) for focused checks, the complete validation suite,
+and local Hub preview.
+
 Good contributions are self-contained explanations, complete runnable workflows, scenario recipes with a goal and trust model, official documentation links, or corrections to syntax and security guidance.
 
 Keep lesson content together under `curriculum/<level>/<number-topic>/`. A lesson owns its `README.md`, guided workflow exercises, starter/reference workflow YAML, realistic fixtures, and topic-specific assets. Do not recreate parallel `docs/` or `examples/` trees. GitHub Actions lessons use workflow-native labs rather than notebooks or simulated runtimes.

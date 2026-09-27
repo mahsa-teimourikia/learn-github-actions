@@ -1,8 +1,18 @@
+<p align="center">
+  <a href="https://oneplusi.io">
+    <img src="assets/one-plus-i.png" alt="One+i" width="112">
+  </a>
+</p>
+
+<p align="center"><strong>A One+i learning experience</strong></p>
+
 # ✨ Learn GitHub Actions ✨
 
 > A structured, hands-on course for designing, writing, debugging, securing, and operating GitHub Actions workflows.
 
-[![Validate learning materials](https://github.com/mahsa-teimourikia/learn-github-actions/actions/workflows/validate-learning.yml/badge.svg)](https://github.com/mahsa-teimourikia/learn-github-actions/actions/workflows/validate-learning.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![One+i](https://img.shields.io/badge/learning-One%2Bi-0969da)](https://oneplusi.io)
+[![Validate learning materials](https://github.com/mahsa-teimourikia/learn-github-actions/actions/workflows/validate-learning.yml/badge.svg)](https://github.com/mahsa-teimourikia/learn-github-actions/actions/workflows/validate-learning.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A [One+i](https://oneplusi.io) course focused on responsible, production-ready engineering through practical learning.
 
 GitHub Actions is GitHub's workflow automation platform for CI/CD and repository operations. Events trigger workflows, jobs run on isolated runners, and steps execute commands or reusable actions. The engineering challenge is not merely writing YAML—it is choosing safe trust boundaries, explicit state handoffs, reliable delivery controls, and observable recovery paths.
 

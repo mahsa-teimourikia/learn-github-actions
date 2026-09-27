@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://oneplusi.io">
-    <img src="assets/one-plus-i.png" alt="One+i" width="112">
+    <img src="assets/one-plus-i-on-white.png" alt="One+i" width="112">
   </a>
 </p>
 

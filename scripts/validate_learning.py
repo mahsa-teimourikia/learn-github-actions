@@ -34,7 +34,11 @@ def validate_links() -> None:
 
 
 def validate_workflows() -> None:
-    workflows = sorted([*ROOT.glob("curriculum/**/*.yml"), *ROOT.glob("curriculum/**/*.yaml")])
+    workflows = sorted(
+        path
+        for path in [*ROOT.glob("curriculum/**/*.yml"), *ROOT.glob("curriculum/**/*.yaml")]
+        if path.name not in {"action.yml", "action.yaml"}
+    )
     assert workflows, "no workflow labs found"
     for workflow in workflows:
         text = workflow.read_text(encoding="utf-8")
@@ -54,6 +58,12 @@ def validate_workflows() -> None:
     assert (syntax / "exercises/01-release-orchestration-starter.yml").exists()
     assert (syntax / "solutions/01-release-orchestration.yml").exists()
     assert (syntax / "release-fixture/package-lock.json").exists()
+    assert (syntax / "actionlint-workshop/README.md").exists()
+    assert (syntax / "actionlint-workshop/package-lock.json").exists()
+    assert (syntax / "actionlint-workshop/sample-action/action.yml").exists()
+    assert (syntax / "solutions/02-actionlint-clean.yml").exists()
+    assert len(list((syntax / "actionlint-workshop/fixtures").glob("*.yml.txt"))) == 6
+    assert not list((syntax / "actionlint-workshop/fixtures").glob("*.yml"))
 
     design = ROOT / "curriculum/intermediate/01-workflow-design"
     assert (design / "exercises/README.md").exists()

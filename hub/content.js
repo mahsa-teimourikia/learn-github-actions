@@ -10,10 +10,10 @@ export const lessons = [
   },
   {
     id: "b2-syntax", level: "beginner", step: "02", title: "Workflow syntax",
-    summary: "Compile typed release inputs into a bounded job graph with safe expressions, explicit outputs, a dynamic matrix, containers, failure evidence, and concurrency.",
-    outcomes: ["Predict context and expression evaluation at each workflow key", "Transfer validated JSON through step and job outputs into a bounded matrix", "Run and diagnose conditions, services, containers, tolerated failures, and queued work"],
+    summary: "Compile typed release inputs into a bounded job graph, then diagnose schema, expression, graph, matrix, action-interface, and script defects locally with actionlint.",
+    outcomes: ["Predict context and expression evaluation at each workflow key", "Transfer validated JSON through step and job outputs into a bounded matrix", "Use pinned static analysis and real GitHub runs as complementary evidence"],
     readme: "curriculum/beginner/02-workflow-syntax/README.md", labGuide: "curriculum/beginner/02-workflow-syntax/exercises/README.md", starter: "curriculum/beginner/02-workflow-syntax/exercises/01-release-orchestration-starter.yml", solution: "curriculum/beginner/02-workflow-syntax/solutions/01-release-orchestration.yml",
-    checkpoint: { question: "The plan job emits a validated JSON matrix. What must the consumer job declare and use?", options: ["A shared workspace and JSON.parse", "needs: plan and fromJSON(needs.plan.outputs.matrix)", "Only always() so the output becomes globally visible"], answer: 1, explanation: "The explicit needs edge makes the producer output available to the consumer; fromJSON converts the output string into a structured matrix value." }
+    checkpoint: { question: "A workflow has zero actionlint findings. What has that established?", options: ["The workflow is secure and production-ready", "The checked source satisfies the enabled static rules for that tool version", "GitHub will provide every secret, runner, and external service"], answer: 1, explanation: "Static analysis proves only its versioned rule contract. Repository policy, runtime services, authorization, external actions, and side effects still require platform runs and focused review." }
   },
   {
     id: "i1-design", level: "intermediate", step: "01", title: "Workflow design",

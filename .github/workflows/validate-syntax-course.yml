@@ -21,19 +21,38 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-
-      - name: Validate starter and reference workflows
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install verified actionlint release
+        env:
+          ACTIONLINT_VERSION: "1.7.12"
+          ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
         run: |
-          docker run --rm \
-            --volume "$GITHUB_WORKSPACE:/repo" \
-            --workdir /repo \
-            rhysd/actionlint:1.7.12 \
-            -color \
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          curl --fail --silent --show-error --location \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
+            --output "$archive"
+          printf '%s  %s\n' "$ACTIONLINT_SHA256" "$archive" | sha256sum --check
+          tar --extract --gzip --file "$archive" --directory "$RUNNER_TEMP" actionlint
+          "$RUNNER_TEMP/actionlint" -version
+      - name: Validate runnable workshop workflows
+        run: |
+          "$RUNNER_TEMP/actionlint" -color \
             curriculum/beginner/02-workflow-syntax/exercises/01-release-orchestration-starter.yml \
-            curriculum/beginner/02-workflow-syntax/solutions/01-release-orchestration.yml
+            curriculum/beginner/02-workflow-syntax/solutions/01-release-orchestration.yml \
+            curriculum/beginner/02-workflow-syntax/solutions/02-actionlint-clean.yml
+      - name: Verify expected workshop diagnostics
+        working-directory: curriculum/beginner/02-workflow-syntax/actionlint-workshop
+        env:
+          ACTIONLINT_BIN: ${{ runner.temp }}/actionlint
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run verify
 
   fixture:
     runs-on: ubuntu-latest
@@ -42,10 +61,10 @@ jobs:
       run:
         working-directory: curriculum/beginner/02-workflow-syntax/release-fixture
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version: 24
           package-manager-cache: false

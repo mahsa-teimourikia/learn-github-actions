@@ -1,0 +1,10 @@
+{
+  "name": "workflow-actionlint-workshop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=24"},
+  "scripts": {
+    "verify": "node scripts/verify-diagnostics.mjs"
+  }
+}

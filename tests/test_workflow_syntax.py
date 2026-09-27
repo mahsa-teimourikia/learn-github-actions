@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import subprocess
 import tempfile
 import unittest
@@ -13,6 +14,8 @@ LESSON = ROOT / "curriculum/beginner/02-workflow-syntax"
 STARTER = LESSON / "exercises/01-release-orchestration-starter.yml"
 SOLUTION = LESSON / "solutions/01-release-orchestration.yml"
 FIXTURE = LESSON / "release-fixture"
+WORKSHOP = LESSON / "actionlint-workshop"
+ACTIONLINT_SOLUTION = LESSON / "solutions/02-actionlint-clean.yml"
 
 
 def read(path: Path) -> str:
@@ -28,6 +31,10 @@ class WorkflowSyntaxTests(unittest.TestCase):
             SOLUTION,
             LESSON / "solutions/README.md",
             FIXTURE / "package-lock.json",
+            WORKSHOP / "README.md",
+            WORKSHOP / "package-lock.json",
+            WORKSHOP / "diagnostics.json",
+            ACTIONLINT_SOLUTION,
         ):
             self.assertTrue(path.exists(), path)
         self.assertFalse(list(LESSON.glob("*.ipynb")))
@@ -79,6 +86,40 @@ class WorkflowSyntaxTests(unittest.TestCase):
         self.assertIn("needs.plan.outputs.matrix", dependency)
         self.assertNotIn("needs: plan", dependency)
         self.assertIn("github.event.inputs.dry_run == false", boolean)
+
+    def test_actionlint_workshop_has_six_measured_non_executable_cases(self) -> None:
+        manifest = json.loads(read(WORKSHOP / "diagnostics.json"))
+        fixtures = sorted((WORKSHOP / "fixtures").glob("*.yml.txt"))
+        self.assertEqual(len(fixtures), 6)
+        self.assertEqual(len(manifest["cases"]), 6)
+        self.assertEqual(
+            {kind for case in manifest["cases"] for kind in case["expectedKinds"]},
+            {"syntax-check", "expression", "job-needs", "matrix", "action"},
+        )
+        self.assertFalse(list((WORKSHOP / "fixtures").glob("*.yml")))
+        self.assertIn("-shellcheck=", read(WORKSHOP / "scripts/verify-diagnostics.mjs"))
+        self.assertIn("-pyflakes=", read(WORKSHOP / "scripts/verify-diagnostics.mjs"))
+
+    def test_actionlint_reference_is_safe_pinned_and_clean_by_contract(self) -> None:
+        workflow = read(ACTIONLINT_SOLUTION)
+        self.assertIn("permissions:\n  contents: read", workflow)
+        self.assertIn("persist-credentials: false", workflow)
+        self.assertIn("ISSUE_TITLE: ${{ github.event.issue.title", workflow)
+        self.assertIn('run: printf \'%s\\n\' "$ISSUE_TITLE"', workflow)
+        self.assertNotIn('run: echo "${{ github.event.', workflow)
+        references = re.findall(r"uses:\s*([^\s#]+)", workflow)
+        for reference in references:
+            if not reference.startswith("./"):
+                self.assertRegex(reference.rsplit("@", 1)[-1], r"^[0-9a-f]{40}$")
+
+    def test_syntax_validation_uses_verified_binary_and_pinned_actions(self) -> None:
+        validation = read(ROOT / ".github/workflows/validate-syntax-course.yml")
+        self.assertIn("ACTIONLINT_VERSION: \"1.7.12\"", validation)
+        self.assertIn("8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8", validation)
+        self.assertIn("npm run verify", validation)
+        self.assertNotIn("rhysd/actionlint:1.7.12", validation)
+        for reference in re.findall(r"uses:\s*([^\s#]+)", validation):
+            self.assertRegex(reference.rsplit("@", 1)[-1], r"^[0-9a-f]{40}$")
 
     def test_fixture_unit_tests_and_local_plan_pass(self) -> None:
         commands = (

@@ -47,11 +47,11 @@ export const questions = [
   {
     id: "syntax-injection",
     category: "Syntax & Expressions",
-    prompt: "Which practices reduce shell-injection risk in workflows?",
-    options: ["Pass event fields through environment variables", "Quote shell variable expansions", "Validate allowlisted values", "Interpolate arbitrary issue titles directly into run", "Prefer structured action inputs where possible"],
+    prompt: "Which statements describe a sound actionlint-based workflow validation process?",
+    options: ["Pin and identify the analyzer version", "Pass event fields through environment variables instead of generated shell source", "Enable ShellCheck and Pyflakes deliberately when those script layers matter", "Treat zero findings as proof that runtime authorization and external effects are correct", "Confirm behavior with bounded GitHub runs"],
     correct: [0, 1, 2, 4],
-    explanation: "Event fields are untrusted. Environment variables, quoting, validation, and structured inputs reduce shell interpretation risk; direct interpolation is dangerous.",
-    source: { label: "Security — Template and shell injection", url: "curriculum/advanced/01-security-and-reliability/README.md#2-template-and-shell-injection" },
+    explanation: "A pinned analyzer, safe data boundaries, explicit delegated linters, and real platform evidence cover different failure layers. Static success cannot prove authorization or side-effect correctness.",
+    source: { label: "Workflow syntax — actionlint workshop", url: "curriculum/beginner/02-workflow-syntax/actionlint-workshop/README.md#put-feedback-at-the-right-stage" },
   },
   {
     id: "reuse-workflow",

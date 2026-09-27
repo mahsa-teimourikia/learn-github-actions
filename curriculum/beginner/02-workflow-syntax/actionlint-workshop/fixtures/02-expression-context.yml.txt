@@ -1,0 +1,13 @@
+# REVIEW ONLY — the matrix defines `os`, not `platform`.
+name: Broken expression context
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - run: echo "validate"

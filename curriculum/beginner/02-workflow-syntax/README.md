@@ -636,6 +636,14 @@ Follow [the workflow lab](exercises/README.md). Start with the runnable
 [solution](solutions/01-release-orchestration.yml) until you have recorded the
 baseline graph and attempted each exercise.
 
+Then complete the standalone
+[`actionlint` diagnostic workshop](actionlint-workshop/README.md). Its six
+review-only workflows isolate schema, expression, dependency, matrix,
+action-input, and untrusted-script defects. A pinned verifier measures expected
+diagnostic kinds, while a second experiment shows how ShellCheck and Pyflakes
+extend analysis of embedded scripts. This separates local static evidence from
+the platform behavior measured by the release-orchestration lab.
+
 The experiment sequence is:
 
 1. map YAML keys to evaluation phases;
@@ -643,7 +651,9 @@ The experiment sequence is:
 3. repair expression-to-shell and Boolean-type failures;
 4. add service and job containers;
 5. add guarded release simulation, reporting, and concurrency;
-6. run nine labeled cases and compare expected with observed evidence.
+6. run nine labeled cases and compare expected with observed evidence;
+7. predict and repair six isolated static-analysis cases; and
+8. compare built-in findings with delegated ShellCheck and Pyflakes findings.
 
 ## Evaluation
 

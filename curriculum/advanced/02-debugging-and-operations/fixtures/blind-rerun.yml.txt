@@ -1,0 +1,15 @@
+# REVIEW ONLY — do not install.
+name: Blind retry after uncertain write
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Treat every failure as safe to retry
+        run: |
+          for attempt in 1 2 3; do
+            ./publish.sh && exit 0
+          done
+          exit 1

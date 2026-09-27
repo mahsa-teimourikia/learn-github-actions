@@ -1,0 +1,60 @@
+name: Validate debugging and operations course
+
+on:
+  pull_request:
+    paths:
+      - "curriculum/advanced/02-debugging-and-operations/**"
+      - "tests/test_debugging_operations.py"
+      - ".github/workflows/validate-debugging-operations-course.yml"
+  push:
+    branches: [main]
+    paths:
+      - "curriculum/advanced/02-debugging-and-operations/**"
+      - "tests/test_debugging_operations.py"
+      - ".github/workflows/validate-debugging-operations-course.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  actionlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install verified actionlint release
+        env:
+          ACTIONLINT_VERSION: "1.7.12"
+          ACTIONLINT_SHA256: "8aca8db96f1b94770f1b0d72b6dddcb1ebb8123cb3712530b08cc387b349a3d8"
+        run: |
+          archive="$RUNNER_TEMP/actionlint.tar.gz"
+          curl --fail --silent --show-error --location \
+            "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz" \
+            --output "$archive"
+          printf '%s  %s\n' "$ACTIONLINT_SHA256" "$archive" | sha256sum --check
+          tar --extract --gzip --file "$archive" --directory "$RUNNER_TEMP" actionlint
+      - name: Validate starter and reference workflows
+        run: |
+          "$RUNNER_TEMP/actionlint" -color \
+            curriculum/advanced/02-debugging-and-operations/exercises/01-incident-operations-starter.yml \
+            curriculum/advanced/02-debugging-and-operations/solutions/01-evidence-led-operations.yml
+
+  fixture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run:
+        working-directory: curriculum/advanced/02-debugging-and-operations/operations-fixture
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm test
+      - run: npm run evaluate

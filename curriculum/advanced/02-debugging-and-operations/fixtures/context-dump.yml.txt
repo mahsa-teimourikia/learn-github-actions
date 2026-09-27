@@ -1,0 +1,12 @@
+# REVIEW ONLY — broad context and environment dumps can expose sensitive data.
+name: Unsafe debug dump
+on: workflow_dispatch
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          COMPLETE_GITHUB_CONTEXT: ${{ toJSON(github) }}
+        run: |
+          env
+          printf '%s\n' "$COMPLETE_GITHUB_CONTEXT"

@@ -1,0 +1,64 @@
+name: Lab - maintenance evidence baseline
+
+on:
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+    inputs:
+      failure_mode:
+        description: Select a deterministic incident scenario
+        required: true
+        type: choice
+        options: [none, deterministic, transient-before-write, transient-after-write, flaky]
+        default: none
+
+permissions:
+  contents: read
+
+concurrency:
+  group: maintenance-lab
+  cancel-in-progress: false
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+          package-manager-cache: false
+      - name: Install and test the maintenance fixture
+        working-directory: curriculum/advanced/02-debugging-and-operations/operations-fixture
+        run: |
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm test
+      - name: Run one observable maintenance operation
+        id: operation
+        continue-on-error: true
+        working-directory: curriculum/advanced/02-debugging-and-operations/operations-fixture
+        env:
+          FAILURE_MODE: ${{ inputs.failure_mode || 'none' }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          IDEMPOTENCY_KEY: maintenance:${{ github.run_id }}
+        run: npm run operate
+      - name: Classify the captured result
+        id: decision
+        if: ${{ always() && !cancelled() }}
+        working-directory: curriculum/advanced/02-debugging-and-operations/operations-fixture
+        run: npm run classify
+      - name: Retain evidence before enforcing the conclusion
+        if: ${{ always() && !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: maintenance-baseline-${{ github.run_id }}-${{ github.run_attempt }}
+          path: curriculum/advanced/02-debugging-and-operations/operations-fixture/reports/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Preserve the true workflow conclusion
+        if: ${{ always() && !cancelled() }}
+        working-directory: curriculum/advanced/02-debugging-and-operations/operations-fixture
+        run: npm run enforce

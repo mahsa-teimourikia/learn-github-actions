@@ -1,0 +1,11 @@
+[
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:20:31Z", "source": "reconciler", "kind": "recovered", "detail": "authoritative target confirms the idempotency key was applied"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:17:00Z", "source": "scheduler", "kind": "trigger", "detail": "scheduled maintenance event created"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:20:10Z", "source": "runner", "kind": "failure-detected", "detail": "operation response timed out"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:20:02Z", "source": "target", "kind": "state-change", "detail": "maintenance key recorded"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:19:00Z", "source": "runner", "kind": "job-start", "detail": "GitHub-hosted runner started the job"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:20:30Z", "source": "reconciler", "kind": "state-query", "detail": "queried authoritative target by idempotency key"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:17:12Z", "source": "actions", "kind": "queued", "detail": "workflow run entered the queue"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:20:00Z", "source": "runner", "kind": "request", "detail": "submitted maintenance operation"},
+  {"incidentId": "INC-1042", "at": "2026-09-12T03:20:32Z", "source": "review", "kind": "root-cause", "detail": "provider response was lost after the write; the operation itself succeeded"}
+]

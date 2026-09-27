@@ -1,0 +1,15 @@
+# REVIEW ONLY — the evidence job is skipped when it is needed most.
+name: Missing failure evidence
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  operate:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./maintenance.sh
+  evidence:
+    needs: operate
+    runs-on: ubuntu-latest
+    steps:
+      - run: ./collect-evidence.sh

@@ -10,9 +10,9 @@ test("built site contains Hub, lesson registry, brand asset, and quiz", async ()
   const hub = await readFile(resolve(root, "site/index.html"), "utf8");
   const content = await readFile(resolve(root, "site/content.js"), "utf8");
   const quiz = await readFile(resolve(root, "site/quiz/index.html"), "utf8");
-  await readFile(resolve(root, "site/assets/one-plus-i.png"));
+  await readFile(resolve(root, "site/assets/one-plus-i-on-white.png"));
   assert.match(readme, /href="https:\/\/oneplusi\.io"/);
-  assert.match(readme, /src="assets\/one-plus-i\.png" alt="One\+i" width="112"/);
+  assert.match(readme, /src="assets\/one-plus-i-on-white\.png" alt="One\+i" width="112"/);
   assert.match(hub, /GitHub Actions Learning Hub/);
   assert.match(hub, /class="oneplus-mark"/);
   assert.match(hub, /alt="One\+i"/);

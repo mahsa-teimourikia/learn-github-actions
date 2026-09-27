@@ -31,10 +31,10 @@ export const lessons = [
   },
   {
     id: "a1-security", level: "advanced", step: "01", title: "Security and reliability",
-    summary: "Threat-model workflow events, minimize permissions, pin dependencies, isolate untrusted code, and make writes retry-safe.",
-    outcomes: ["Classify event trust boundaries", "Recognize shell injection and mutable dependency risk", "Bound credentials, runners, and retries"],
-    readme: "curriculum/advanced/01-security-and-reliability/README.md", labGuide: "curriculum/advanced/01-security-and-reliability/README.md", starter: "curriculum/advanced/01-security-and-reliability/security-scan.yml", solution: "curriculum/advanced/01-security-and-reliability/security-scan.yml",
-    checkpoint: { question: "Which combination creates the clearest critical risk?", options: ["Read-only pull_request validation", "Privileged pull_request_target that executes fork code", "A scheduled read-only lint"], answer: 1, explanation: "The base-repository privilege of pull_request_target must never be combined with blindly executing untrusted fork code." }
+    summary: "Close attack paths across events, expressions, actions, caches, artifacts, credentials, runners, and unreliable side effects.",
+    outcomes: ["Trace untrusted input to interpreters and authority", "Apply immutable dependencies, negative authorization, and runner isolation", "Enforce scanners and policy through one fail-closed check"],
+    readme: "curriculum/advanced/01-security-and-reliability/README.md", labGuide: "curriculum/advanced/01-security-and-reliability/exercises/README.md", starter: "curriculum/advanced/01-security-and-reliability/exercises/01-security-gate-starter.yml", solution: "curriculum/advanced/01-security-and-reliability/solutions/01-hardened-security-gate.yml",
+    checkpoint: { question: "A privileged workflow_run job downloads an artifact produced by fork code. What removes the critical path?", options: ["Trust the artifact because its producer check passed", "Execute it after renaming the archive", "Bind producer and source identity, verify digest/provenance, and treat content as data unless explicitly authorized"], answer: 2, explanation: "A green producer does not grant trust. The privileged consumer must validate identity and integrity and must not blindly execute fork-derived content." }
   },
   {
     id: "a2-operations", level: "advanced", step: "02", title: "Debugging and operations",

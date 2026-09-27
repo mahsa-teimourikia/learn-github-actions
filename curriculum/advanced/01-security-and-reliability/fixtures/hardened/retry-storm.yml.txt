@@ -1,0 +1,23 @@
+name: Bounded reconciliation
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Reconcile before one safe retry
+        env:
+          IDEMPOTENCY_KEY: ${{ github.run_id }}:${{ github.run_attempt }}
+        run: |
+          if ./scripts/query-state.sh "$IDEMPOTENCY_KEY"; then
+            exit 0
+          fi
+          ./scripts/publish-once.sh "$IDEMPOTENCY_KEY"

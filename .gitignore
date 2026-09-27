@@ -5,3 +5,4 @@ __pycache__/
 node_modules/
 .DS_Store
 site/
+curriculum/advanced/01-security-and-reliability/security-fixture/reports/

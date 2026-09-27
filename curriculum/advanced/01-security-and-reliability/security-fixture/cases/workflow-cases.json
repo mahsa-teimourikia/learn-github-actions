@@ -1,0 +1,44 @@
+[
+  {
+    "id": "pwn-request",
+    "vulnerable": "fixtures/vulnerable/pwn-request.yml.txt",
+    "hardened": "fixtures/hardened/pwn-request.yml.txt",
+    "expectedVulnerableFindings": ["checkout-credentials", "mutable-action", "pwn-request"],
+    "expectedHardenedFindings": []
+  },
+  {
+    "id": "script-injection",
+    "vulnerable": "fixtures/vulnerable/script-injection.yml.txt",
+    "hardened": "fixtures/hardened/script-injection.yml.txt",
+    "expectedVulnerableFindings": ["checkout-credentials", "mutable-action", "template-injection"],
+    "expectedHardenedFindings": []
+  },
+  {
+    "id": "privileged-cache",
+    "vulnerable": "fixtures/vulnerable/privileged-cache.yml.txt",
+    "hardened": "fixtures/hardened/privileged-cache.yml.txt",
+    "expectedVulnerableFindings": ["checkout-credentials", "mutable-action", "privileged-cache-write"],
+    "expectedHardenedFindings": []
+  },
+  {
+    "id": "artifact-confusion",
+    "vulnerable": "fixtures/vulnerable/artifact-confusion.yml.txt",
+    "hardened": "fixtures/hardened/artifact-confusion.yml.txt",
+    "expectedVulnerableFindings": ["mutable-action", "untrusted-artifact-execution"],
+    "expectedHardenedFindings": []
+  },
+  {
+    "id": "dependency-drift",
+    "vulnerable": "fixtures/vulnerable/dependency-drift.yml.txt",
+    "hardened": "fixtures/hardened/dependency-drift.yml.txt",
+    "expectedVulnerableFindings": ["checkout-credentials", "mutable-action", "write-all"],
+    "expectedHardenedFindings": []
+  },
+  {
+    "id": "retry-storm",
+    "vulnerable": "fixtures/vulnerable/retry-storm.yml.txt",
+    "hardened": "fixtures/hardened/retry-storm.yml.txt",
+    "expectedVulnerableFindings": ["checkout-credentials", "mutable-action", "unbounded-retry"],
+    "expectedHardenedFindings": []
+  }
+]

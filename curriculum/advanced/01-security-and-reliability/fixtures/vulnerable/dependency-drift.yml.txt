@@ -1,0 +1,13 @@
+# REVIEW ONLY — never install this workflow.
+name: Vulnerable mutable dependency
+on:
+  push:
+
+permissions: write-all
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - run: ./scripts/publish.sh

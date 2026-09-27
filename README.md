@@ -22,7 +22,7 @@ Prefer repository navigation? Open the [curriculum index](curriculum/README.md) 
 | Beginner | [Workflow syntax](curriculum/beginner/02-workflow-syntax/README.md) | Compile typed inputs, safe expressions, outputs, dynamic matrices, containers, and concurrency into a predictable run graph |
 | Intermediate | [Workflow design](curriculum/intermediate/01-workflow-design/README.md) | Choose reuse boundaries, control fan-out, and make data movement explicit |
 | Intermediate | [Deployment patterns](curriculum/intermediate/02-deployment-patterns/README.md) | Build once, promote immutably, protect environments, and use OIDC |
-| Advanced | [Security and reliability](curriculum/advanced/01-security-and-reliability/README.md) | Threat-model events, dependencies, credentials, runners, and retries |
+| Advanced | [Security and reliability](curriculum/advanced/01-security-and-reliability/README.md) | Close attack paths across events, expressions, dependencies, state, credentials, runners, and failure recovery |
 | Advanced | [Debugging and operations](curriculum/advanced/02-debugging-and-operations/README.md) | Investigate failures, preserve evidence, observe runs, and recover safely |
 
 See the [course improvement plan](COURSE_PLAN.md) for the evidence-based lesson review sequence and [ROADMAP.md](ROADMAP.md) for longer-term additions.
@@ -79,7 +79,7 @@ Then open `http://localhost:8000`.
 - [Workflow syntax reference](curriculum/beginner/02-workflow-syntax/README.md)
 - [Cache, artifact, matrix, and reuse decisions](curriculum/intermediate/01-workflow-design/README.md)
 - [Scenario and deployment cookbook](curriculum/intermediate/02-deployment-patterns/README.md)
-- [Security review checklist](curriculum/advanced/01-security-and-reliability/README.md)
+- [Security threat model and workflow-native policy lab](curriculum/advanced/01-security-and-reliability/README.md)
 - [Failure triage and incident response](curriculum/advanced/02-debugging-and-operations/README.md)
 
 ## Official references

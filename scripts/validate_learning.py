@@ -23,7 +23,12 @@ def validate_lessons() -> None:
 def validate_links() -> None:
     pattern = re.compile(r"!?(?:\[[^]]*\])\(([^)]+)\)")
     failures: list[str] = []
-    for markdown in [ROOT / "README.md", *ROOT.glob("curriculum/**/*.md")]:
+    for markdown in [
+        ROOT / "README.md",
+        ROOT / "INSTALLATION.md",
+        ROOT / "RUN_GUIDE.md",
+        *ROOT.glob("curriculum/**/*.md"),
+    ]:
         for target in pattern.findall(markdown.read_text(encoding="utf-8")):
             clean = target.split("#", 1)[0]
             if not clean or clean.startswith(("http://", "https://", "mailto:")):

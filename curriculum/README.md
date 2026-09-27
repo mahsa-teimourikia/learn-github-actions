@@ -10,6 +10,11 @@ workflow syntax          deployment patterns         incident response
 
 Every lesson owns its technical chapter and the workflow labs it teaches. Learners work directly with starter workflows, real GitHub runs, realistic fixtures, failure injection, and reference solutions. Supporting scripts may power a fixture, but notebooks and simulated runtimes are not the teaching interface.
 
+Before starting, choose a setup in the repository
+[installation guide](../INSTALLATION.md), then use the [run guide](../RUN_GUIDE.md)
+for local validation, fixture commands, GitHub practice-fork workflow steps, and
+cleanup.
+
 ## Curriculum map
 
 | Level | Lesson | Main question | Practical artifacts |
@@ -23,11 +28,12 @@ Every lesson owns its technical chapter and the workflow labs it teaches. Learne
 
 ## How to study a lesson
 
-1. Read its README and identify the event, trust boundary, permissions, state handoff, and side effects.
-2. Inspect the owned workflow examples. Replace placeholders before using them elsewhere.
-3. Copy the starter into `.github/workflows/` on a practice branch or fork.
-4. Run success and failure scenarios, inspect the evidence, and compare with the reference solution.
-5. Use the Hub checkpoint, then take the full quiz after each level.
+1. Complete the installation check and choose browser, local, or GitHub-hosted practice.
+2. Read the lesson README and identify the event, trust boundary, permissions, state handoff, and side effects.
+3. Inspect the owned workflow examples. Replace placeholders before using them elsewhere.
+4. Copy the starter into `.github/workflows/` only in a practice fork, following trigger/default-branch guidance.
+5. Run success and failure scenarios, inspect the evidence, and compare with the reference solution.
+6. Remove copied workflow files, use the Hub checkpoint, then take the full quiz after each level.
 
 ## Progression and exit capabilities
 

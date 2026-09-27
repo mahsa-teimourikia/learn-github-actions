@@ -14,6 +14,10 @@ The Hub is the main entry point. Filter by level, select a lesson, and work thro
 
 Prefer repository navigation? Open the [curriculum index](curriculum/README.md) or take the [full knowledge check](https://mahsa-teimourikia.github.io/learn-github-actions/quiz/).
 
+New here? Use the [installation guide](INSTALLATION.md) to choose a browser-only,
+local, or GitHub practice setup, then follow the [run guide](RUN_GUIDE.md) for
+the Hub, tests, fixtures, and workflow labs.
+
 ## Curriculum roadmap
 
 | Level | Lesson | Capability |
@@ -40,19 +44,28 @@ assets/             # shared brand assets only
 scripts/            # link, workflow-lab, and Pages validation
 tests/              # built-site smoke tests
 .github/             # validation, Pages deployment, and contribution templates
+INSTALLATION.md      # local and GitHub practice prerequisites
+RUN_GUIDE.md         # exact commands and workflow-lab lifecycle
 ```
 
 The previous parallel `docs/` and `examples/` trees have been consolidated. Lesson-specific explanations and workflows now live together, so moving or extending a lesson does not leave its practical material disconnected.
 
-## Run locally
+## Install and run
 
-Requirements: Python 3.11 or newer, Node.js 24 or newer, and GNU Make.
+For complete setup instructions, including fork configuration, optional GitHub
+CLI authentication, Windows/WSL notes, and `actionlint`, read
+[Installation](INSTALLATION.md). For exact commands and the distinction between
+local fixtures and real GitHub runs, read [Run guide](RUN_GUIDE.md).
+
+The shortest credential-free local check requires Node.js 24+ and Python 3.11+:
 
 ```bash
-make test
+npm test
 ```
 
 This validates all local Markdown links and workflow-lab structure, executes the sample application and focused tests, tests quiz grading, builds the static Hub plus quiz, and smoke-tests the output. No API keys or GitHub tokens are required for repository validation; learner workflow experiments run on a practice branch or fork.
+
+GNU Make is optional; `make test` runs the equivalent complete validation path.
 
 To preview the generated site:
 
@@ -75,6 +88,8 @@ Then open `http://localhost:8000`.
 
 ## Practical guides
 
+- [Installation and prerequisites](INSTALLATION.md)
+- [Run the Hub, tests, fixtures, and workflow labs](RUN_GUIDE.md)
 - [Event and execution model](curriculum/beginner/01-actions-foundations/README.md)
 - [Workflow syntax reference](curriculum/beginner/02-workflow-syntax/README.md)
 - [Local `actionlint` diagnostic workshop](curriculum/beginner/02-workflow-syntax/actionlint-workshop/README.md)
